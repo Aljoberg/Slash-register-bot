@@ -1,0 +1,2 @@
+command managemt
+[make an option] | [make a choice on an option] | [make a subcommand] | [finish and create the command]
