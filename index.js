@@ -863,6 +863,6 @@ client.on("guildDelete", async g => {
 client.on("ready", () => console.log("im ready"))
 client.on("ready", async () => {
   console.log(`${client.user.tag} is redy and is in ${client.guilds.cache.size} servers ඞ`);
-  client.user.setActivity("the newly created commands");
-})
+  client.user.setActivity("the newly created commands", {type: "WATCHING"});
+});
 client.login(process.env.token)
