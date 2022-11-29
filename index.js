@@ -1,7 +1,10 @@
 const express = require('express');
 const Discord = require("discord.js");
 const app = express();
-
+process.on('unhandledRejection', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('uncaughtException', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('exit', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('multipleResolves', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 app.get('/', (req, res) => {
   res.send('Hello Express app!')
 });
@@ -794,9 +797,19 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
     }
   }
 })
+client.on("guildCreate", async g => {
+  (await client.channels.fetch("1047257458835472536")).send(`We got invited to ${g.name} with ${g.memberCount} members :D`)
+});
+client.on("interactionCreate", async e => {
+  (await client.channels.fetch("1047257458835472536")).send(`Someone used a command in ${e.guild} poggers`)
+})
+client.on("guildDelete", async g => {
+  (await client.channels.fetch("1047257458835472536")).send(`We got kicked from ${g.name} with ${g.memberCount} members :(`)
+})
 
 client.on("ready", () => console.log("im ready"))
 client.on("ready", async () => {
-  console.log(`${client.user.tag} is redy and is in ${client.guilds.cache.size} servers ඞ`)
+  console.log(`${client.user.tag} is redy and is in ${client.guilds.cache.size} servers ඞ`);
+  client.user.setActivity("the newly created commands");
 })
 client.login(process.env.token)
