@@ -31,7 +31,7 @@ client.on("interactionCreate", async interaction => {
         let sussuss = await db.get(`commands_${interaction.user.id}`)
         if(sussuss == null) sussuss = {}
         let lakaka = Object.keys(sussuss).length
-        if(lakaka == 25) return interaction.reply({content: "You can only have 25 commands per account. ||PAY 69420$ IF YOU WANT MORE||", ephemeral: true})
+        if(lakaka == 25) return interaction.reply({content: "You can only have 25 commands per account. We'll make an option to pay soon :) Thanks for supporting us!", ephemeral: true})
 let m = new Discord.MessageButton()
       .setLabel("Guild commands")
       .setStyle("PRIMARY")
@@ -798,22 +798,5 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
 client.on("ready", () => console.log("im ready"))
 client.on("ready", async () => {
   console.log(`${client.user.tag} is redy and is in ${client.guilds.cache.size} servers ඞ`)
-  console.log(await db.get(`commands_738354468709597227`))
-  console.log(`${client.guilds.cache.map(g => `${g.name}, ${g.id}`)}`)
-  console.log(`${await db.get("currentEditingChoiceOption_738354468709597227")}`)
-  console.log(`${await db.get(`botToken_381833836843237377`)}`)
-  //await db.set(`commands_738354468709597227`, {})
-  //console.log(`${await db.list("864412190010245121")}`)
-})
-client.on("messageDelete", d => console.log(`${d.author.tag} deleted ${d.content}`))
-client.on("messageUpdate", (o, n) => {
-  console.log(`${n.author.tag} changed ${o.content} to ${n.content}.`)
-  
-})
-client.on("rateLimit", () => {
-  process.kill(1)
-})
-client.on("debug", (info) => {
-  if(info.startsWith("Hit a 429")) process.kill(1);
 })
 client.login(process.env.token)
