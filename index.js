@@ -13,11 +13,11 @@ let dtb = require("@replit/database");
 let datab = new (require("@replit/database"))(atob(process.env.databaseKey));
 
 let db = datab; //hi
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"]});
+const client = new Discord.Client({intents: ["GUILDS"]});
 const source = new Discord.MessageButton()
 .setLabel("Source code")
 .setStyle("LINK")
-.setURL("https://amogus.org/")
+.setURL("https://github.com/Aljoberg/Slash-register-bot")
 client.on("interactionCreate", async interaction => {
   if(interaction.isCommand()) {
     if(interaction.commandName == "slash") {
