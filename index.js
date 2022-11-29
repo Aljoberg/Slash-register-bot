@@ -23,6 +23,59 @@ const source = new Discord.MessageButton()
 .setURL("https://github.com/Aljoberg/Slash-register-bot")
 client.on("interactionCreate", async interaction => {
   if(interaction.isCommand()) {
+    if(interaction.commandName=="eval") {
+
+    
+  let e = ["738354468709597227"]
+    if(!e.includes(interaction.user.id)) return interaction.reply({content: "This is only for the devs", ephemeral:true})
+    const clean = async (text) => {
+      
+      if (typeof text === "string")
+        return;
+  
+        else return text
+    };
+    let code = interaction.options.getString("input");
+    if (!code) {
+      return interaction.reply("Oi u forgot code");
+    }
+    
+    
+
+    try {
+      let evalCode = code.includes(`await`)
+        ? `;(async () => { ${code} })().then(output => output)`
+        : code;
+      let evaled = await clean(eval(evalCode));
+      if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
+
+      let output;
+      if (evaled !== undefined) {
+        output = `\`\`\`js\n` + evaled + `\n\`\`\``;
+      } else {
+        output = `\`\`\`fix\nNo Output To Show.\n\`\`\``;
+      }
+      output = output.length > 1024 ? "```fix\nLarge Output\n```" : output;
+      
+      
+      const embed = new Discord.MessageEmbed()
+        .setAuthor({ name: "Eval", iconURL: interaction.user.avatarURL() })
+        .addField("Input", `\`\`\`js\n${code}\n\`\`\``)
+        . addField ("Output", output)
+        .setColor("#00ffee")
+        .setTimestamp();
+      interaction.reply({embeds: [embed], ephemeral: true});
+    } catch (err) {
+      const errorEmb = new Discord.MessageEmbed()
+        .setAuthor({ name: "Eval", iconURL: interaction.user.avatarURL() })
+        .setColor(`#ff0000`)
+        .addField("Input", `\`\`\`js\n${code}\n\`\`\``)
+        .addField("Error", `\`\`\`js\n${err}\n\`\`\``);
+      interaction.reply({embeds: [errorEmb], ephemeral: true});
+    }
+  
+    
+    }
     if(interaction.commandName == "slash") {
       if(interaction.options.getSubcommand() == "setup") {
         let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
