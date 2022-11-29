@@ -853,9 +853,7 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
 client.on("guildCreate", async g => {
   (await client.channels.fetch("1047257458835472536")).send(`We got invited to ${g.name} with ${g.memberCount} members :D`)
 });
-client.on("interactionCreate", async e => {
-  (await client.channels.fetch("1047257458835472536")).send(`Someone used a command in ${e.guild} poggers`)
-})
+
 client.on("guildDelete", async g => {
   (await client.channels.fetch("1047257458835472536")).send(`We got kicked from ${g.name} with ${g.memberCount} members :(`)
 })
