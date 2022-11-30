@@ -78,10 +78,7 @@ client.on("interactionCreate", async interaction => {
     }
     if(interaction.commandName == "slash") {
       if(interaction.options.getSubcommand() == "setup") {
-        let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
-      //amogus
-     let intr = interaction.reply({content: "Welcome to the setup! Now, I'll leave a button labeled \"source\" on every one of these messages so you can always check the source code in case you don't trust the bot ;)\n\nSo, what's your client ID? (the bot's ID)", components: [row], ephemeral:true})
-      await db.set(`currentInteraction_${interaction.user.id}`, intr)  
+        await interaction.reply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Change token").setStyle("PRIMARY"), new Discord.MessageButton().setCustomId("nochangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true});//notchangetoken
       }
       if(interaction.options.getSubcommand() == "register") {
         let sussuss = await db.get(`commands_${interaction.user.id}`)
@@ -146,6 +143,16 @@ let m = new Discord.MessageButton()
     }D*/
   }
   if(interaction.isButton()) {
+    if(interaction.customId == "yeschangetoken") {
+      await db.delete(`botToken_${interaction.user.id}`)
+      interaction.reply({content:"Token deleted!", ephemeral: true})
+    }
+    if(interaction.customId == "notchangetoken") {
+      let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
+      //amogus
+     let intr = interaction.reply({content: "Welcome to the setup! Now, I'll leave a button labeled \"source\" on every one of these messages so you can always check the source code in case you don't trust the bot ;)\n\nSo, what's your client ID? (the bot's ID)", components: [row], ephemeral:true})
+      await db.set(`currentInteraction_${interaction.user.id}`, intr);
+    }
     if(interaction.customId == "deleteChoiceButton") {
       let kakakakakaka = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let rftgzhujikol=await db.get(`commands_${interaction.user.id}`)
