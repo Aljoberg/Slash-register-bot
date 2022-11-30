@@ -78,7 +78,7 @@ client.on("interactionCreate", async interaction => {
     }
     if(interaction.commandName == "slash") {
       if(interaction.options.getSubcommand() == "setup") {
-        await interaction.reply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Change token").setStyle("PRIMARY"), new Discord.MessageButton().setCustomId("nochangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true});//notchangetoken
+        await interaction.reply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Change token").setStyle("PRIMARY"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true});//notchangetoken
       }
       if(interaction.options.getSubcommand() == "register") {
         let sussuss = await db.get(`commands_${interaction.user.id}`)
