@@ -146,6 +146,7 @@ let m = new Discord.MessageButton()
     if(interaction.customId == "yeschangetoken") {
       await db.delete(`botToken_${interaction.user.id}`)
       interaction.reply({content:"Token deleted!", ephemeral: true})
+      await db.set(`hasCompletedSetup_${interaction.user.id}`, false);
     }
     if(interaction.customId == "notchangetoken") {
       let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
