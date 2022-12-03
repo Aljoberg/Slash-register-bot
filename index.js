@@ -8,7 +8,7 @@ process.on('multipleResolves', async err => (await client.channels.fetch('104725
 app.get('/', (req, res) => {
   res.send('Hello Express app!')
 });
-app.listen(3000, () => {
+app.listen(3000, () => { //leave that if ya want
   console.log('server started');
 }); //hi
 let dtb = require("@replit/database");
@@ -39,17 +39,22 @@ let styleOptions = optionsobj => {
     11: "attachment"
   };
   let strig = "\n";
-  let choicesstrig = "the choices:\n";
-  if(optionsobj["choices"]) {
-    for(let i = 0;i<optionsobj["choices"].length;i++){
-      choicesstrig += `\`${optionsobj["choices"][i]["name"]}\`, and has the value ${optionsobj["choices"][i]["value"]}`;
-    }
-  }
+  let choicesstrig = "the choices:\n"; //works works works works its okay lol also wanna remove the console logs? like all of 'em, done whaa- hehe
+//anyways pushing to git
+  if(!optionsobj || optionsobj.length == 0) return "None"
   for(let i = 0;i<optionsobj.length;i++) {
     let optionsobjec = optionsobj[i];
+    if(!optionsobjec) continue;
+    if(optionsobj[i]["choices"]) {
+    for(let i2 = 0; i2 < optionsobj[i]["choices"].length;i2++){
+      if(!optionsobj[i]["choices"][i2]) continue;
+      choicesstrig += `\`${optionsobj[i]["choices"][i2]["name"]}\`, and has the value ${optionsobj[i]["choices"][i2]["value"]}`; //dont delte anytihng lol
+    }// well uh, the thing is... more formatted code looks better and more understandable than uh,,,, this well yeah but idrc, just so it works nah jk but its good like this uh ok
+  }
     strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] ? choicesstrig : "no choices"}.`
   }
-  return strig;
+
+  return strig != "\n" ? strig.replace("the choices:\n.", "no choices.") : "None"//im lazy to filter everything dude
 }
 client.on("interactionCreate", async interaction => {
   if(interaction.isCommand()) {
@@ -141,7 +146,7 @@ let m = new Discord.MessageButton()
           m.addOptions([{"label": superil, "value": `${c}`}])
           
         });
-        console.log(m.options)
+        
         if(brd == 0) return interaction.reply({content: "You've got no commands! Go create one using `/slash register` ;)", ephemeral: true})
         await interaction.reply({content: "Select commands to delete! ;)", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
       }
@@ -155,7 +160,7 @@ let m = new Discord.MessageButton()
           m.addOptions([{"label": superil, "value": `${c}`}])
           
         });
-        console.log(m.options)
+        
         if(brd == 0) return interaction.reply({content: "You've got no commands! Go create one using `/slash register` ;)", ephemeral: true})
         await interaction.reply({content: "Select commands to modify! ;)", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
       }
@@ -184,19 +189,19 @@ let m = new Discord.MessageButton()
       let rftgzhujikol=await db.get(`commands_${interaction.user.id}`)
       let optns = rftgzhujikol[kakakakakaka].options;
       if(!optns || optns == null) return await interaction.reply({content: "You don't have any options. Go create one!", ephemeral: true})
-      console.log(`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`)
+
       let isnull = optns.every(elm => elm === null)
       if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
       //let m = new Di
       let su = 0;
       Object.keys(optns).forEach(fofo => {
-        console.log(`sus ${optns[fofo]}`)
+        //ok so you have 81 consol.logs ik maybe another time
         if(optns[fofo] != null) su = su + 1;
       })
       let m = new Discord.MessageSelectMenu().setCustomId("deleteoptionforchoicemenu").setMinValues(1).setMaxValues(1);
       
       Object.keys(optns).forEach(o => {
-        console.log(optns)
+
         if(optns[o] == null) console.log("it was null :c")
         else m.addOptions([{"label": `Option - ${optns[o].name}`, "value": `${optns[o].name}`}])
       })
@@ -206,21 +211,20 @@ let m = new Discord.MessageButton()
       let kakakakakaka = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let rftgzhujikol=await db.get(`commands_${interaction.user.id}`)
       let optns = rftgzhujikol[kakakakakaka].options
-      console.log(`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`)
+
       if(!optns || optns == null) return await interaction.reply({content: "You don't have any options. Go create one!", ephemeral: true})
       let isnull = optns.every(elm => elm === null)
       if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
       //let m = new Di
       let su = 0;
       Object.keys(optns).forEach(fofo => {
-        console.log(`sus ${optns[fofo]}`)
         if(optns[fofo] != null) su = su + 1;
       })
       let m = new Discord.MessageSelectMenu().setCustomId("deleteoptionmenu").setMinValues(1).setMaxValues(su);
       
-      Object.keys(optns).forEach(o => {
-        console.log(optns)
-        if(optns[o] == null) console.log("it was null :c")
+      Object.keys(optns).forEach(o => { //nah its good
+ // hey u dont have to if u dont want, its okay kk
+        if(optns[o] == null) console.log("it was null :c") //leave these cuz its for the if
         else m.addOptions([{"label": `Option - ${optns[o].name}`, "value": `${optns[o].name}`}])
       })
       await interaction.update({content: "Select options to delete!", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
@@ -229,7 +233,7 @@ let m = new Discord.MessageButton()
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
       if(ja == null || ja == false) return interaction.reply({content: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", ephemeral: true})
       let mtut = await db.get(`registerMsg_${interaction.user.id}`)
-      console.log(mtut)
+  
       
       /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
         realmtut.edit("hi")
@@ -248,7 +252,7 @@ if(interaction.customId == "global") {
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
       if(ja == null || ja == false) return interaction.reply({content: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", ephemeral: true})
       let mtut = await db.get(`registerMsg_${interaction.user.id}`)
-      console.log(mtut)
+      
      
       /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
         realmtut.edit("hi")
@@ -343,11 +347,11 @@ if(interaction.customId == "guildidinput") {
     if(interaction.customId == "choiceButton") {
       let menu = new Discord.MessageSelectMenu().setCustomId("choicemenu").setMaxValues(1).setMinValues(1).setPlaceholder("Select a slash option!")
       let cmds = await db.get(`commands_${interaction.user.id}`)
-      console.log(cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)].options)
-      console.log("up was cmds")
+
+      
       for(let i = 0;i<cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)]["options"].length;i++) {
         let key = cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)].options[i]
-        console.log(key)
+        
         if(key == null) console.log("nul")
         else {
           let actualkey = key.name
@@ -363,7 +367,7 @@ if(interaction.customId == "guildidinput") {
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
       interaction.update({content: "Okay, registering the command.", components: []})
-      console.log(current)
+      
       //await interaction.deferReply({ephemeral: true})
       let fetch = require("node-fetch");
       let body = {
@@ -374,7 +378,7 @@ if(interaction.customId == "guildidinput") {
         body["options"] = commandObj.options
       }
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
-      console.log(dussyUrl)
+      
       await fetch(dussyUrl, {
         "method": "POST",
         "headers": {
@@ -383,12 +387,9 @@ if(interaction.customId == "guildidinput") {
         },
         "body": JSON.stringify(body)
       }).catch(err => console.error(err)).then(async f => {
-        console.log(f.status)
-        
-      
       await db.set(`commands_${interaction.user.id}`, cmds)
         if(f.status == 201 || f.status == 200) {
-          console.log("breadsu")
+          
           let zuzu = await f.json();
         commandObj["id"] = `${zuzu.id}`;
         commandObj["made"] = true;
@@ -409,36 +410,28 @@ if(interaction.customId == "guildidinput") {
      let dgunfduhnfdgujhn = await db.get(`currentEditingCommand_${interaction.user.id}`);
      interaction.values.forEach(async v => {
       
-       console.log("e");
+       
        let optionnum;
        try {
          for(let superIdol = 0;superIdol<hujtkgfgimfg[dgunfduhnfdgujhn]["options"].length;superIdol++) {
            if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][superIdol] == null) console.log("nul")
            else {
-             console.log(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][superIdol]["name"])
-           console.log("up was name");
-           console.log(`${await db.get(`currentEditingChoiceOption_${interaction.user.id}`)}`)
-           console.log("up was6")
+ //wat how do you even remember these i just do /shrug damn ok lol
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][superIdol]["name"] == `${await db.get(`currentEditingChoiceOption_${interaction.user.id}`)}`) optionnum = superIdol;
            }
            
        }
        } catch(err) {console.error(err)} finally {
          
-       console.log(v)
-       console.log("up was v")
-         console.log(optionnum)
-     //delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][v]
-       console.log(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]);
+       
+
        for(let lakakak = 0;lakakak < hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]["choices"].length;lakakak++) {
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]["choices"][lakakak] == null) console.log("null sadly")
          else {
-           console.log(v + "to je v")
+           
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]["choices"][lakakak]["name"] == `${v}`) {
            delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]["choices"][lakakak];
-            console.log("bread:")
-           console.log(hujtkgfgimfg)
-           console.log("end of bread")
+
           
          await interaction.followUp({content: `Deleted ${v}!`, ephemeral: true});
          }
@@ -452,7 +445,7 @@ if(interaction.customId == "guildidinput") {
        let emm = await db.get(`commands_${interaction.user.id}`)
        let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
+      
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -478,8 +471,8 @@ if(interaction.customId == "guildidinput") {
        let op2 = cm[cm2]["options"][op1]
        if(op2 == null) console.log("nul it was")
        else {
-        console.log(op2);
-         console.log("wevedoneit")
+        
+        
        if(op2.name == vuvuv) {
          let op = cm[cm2]["options"][op1]
          let optns = cm[cm2]["options"]
@@ -488,7 +481,7 @@ if(interaction.customId == "guildidinput") {
       if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
          let su = 0;
       Object.keys(optns).forEach(fofo => {
-        console.log(`sus ${optns[fofo]}`)
+        
         if(optns[fofo] != null) su = su + 1;
       })
          let mn = new Discord.MessageSelectMenu().setMinValues(1).setMaxValues(su).setPlaceholder("Select choices!").setCustomId("choicechoosemenutodeletehtem")
@@ -511,22 +504,13 @@ if(interaction.customId == "guildidinput") {
      let hujtkgfgimfg = await db.get(`commands_${interaction.user.id}`);
      let dgunfduhnfdgujhn = await db.get(`currentEditingCommand_${interaction.user.id}`);
      interaction.values.forEach(async v => {
-      
-       console.log("e");
-       
-       console.log(v)
-       console.log("up was v")
-     //delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][v]
-       console.log(hujtkgfgimfg[dgunfduhnfdgujhn]["options"].length);
+
        for(let lakakak = 0;lakakak < hujtkgfgimfg[dgunfduhnfdgujhn]["options"].length;lakakak++) {
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][lakakak] == null) console.log("null sadly")
          else {
-           console.log(v + "to je v")
+
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][lakakak]["name"] == `${v}`) {
            delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][lakakak];
-            console.log("bread:")
-           console.log(hujtkgfgimfg)
-           console.log("end of bread")
           
          await interaction.followUp({content: `Deleted ${v}!`, ephemeral: true});
          }
@@ -538,7 +522,6 @@ if(interaction.customId == "guildidinput") {
        let emm = await db.get(`commands_${interaction.user.id}`)
        let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -558,7 +541,7 @@ if(interaction.customId == "guildidinput") {
      let emm = await db.get(`commands_${interaction.user.id}`)
      let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
+      
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -574,16 +557,14 @@ if(interaction.customId == "guildidinput") {
        
        if(cm[v]["made"] == true) {
          let fetch = require("node-fetch");
-         console.log(cm[v])
-         console.log(cm)
-         console.log(v)
+         
          let tofehf = cm[v]["guild"] == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands/${cm[v]["id"]}` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands/${cm[v]["id"]}`;
-         console.log(tofehf)
+         
          await fetch(tofehf, {
            "method": "DELETE",
            "headers": {"Authorization": `Bot ${await db.get(`botToken_${interaction.user.id}`)}`}
          }).catch(err => console.error(err)).then(async rp => {
-           console.log(`delet status: ${rp.status}`)
+           
            //let sususususususussu = await rp.json();
            //console.log(sususususususussu)
            if(rp.ok) {
@@ -631,7 +612,7 @@ await interaction.showModal(modal);
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
+      
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -652,8 +633,7 @@ await interaction.showModal(modal);
         label: "String", value: "3"
       }, {label: "Number", value: "4"}, {label: "Boolean (true or false)", value: "5"}, {label: "User", value: "6"}, {label: "Channel", value: "7"}, {label: "Role", value: "8"}, {label: "Everything mentionable", value: "9"}, {label: "Attachment", value: "11"}]))
       let rw2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("SUCCESS").setLabel("Yes").setCustomId("optionRequiredTrue").setEmoji("✅"), new Discord.MessageButton().setCustomId("optionRequiredFalse").setLabel("No").setStyle("DANGER").setEmoji("❌"))
-      console.log(interaction.deferred)
-      console.log(interaction.replied)
+      
 
         await interaction.update({content: "Should the option be required or no?", ephemeral: true, components: [rw2]})
      
@@ -680,7 +660,7 @@ await interaction.showModal(modal);
       superidolll.on("collect", async clt => {
         optionObj["type"] = clt.values[0];
         let e = await db.get(`commands_${interaction.user.id}`)
-     // console.log(e)
+     
       let optn = e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options
       if(!optn) {
           if(!e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options || e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options == null) e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options = []
@@ -691,7 +671,7 @@ await interaction.showModal(modal);
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
+      
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -701,10 +681,7 @@ await interaction.showModal(modal);
 await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
       
-      console.log(await db.get(`currentMng_${interaction.user.id}`))
       } else {
-        console.log("optn:")
-      console.log(optn)
       for(let iu = 0;iu<optn.length;iu++) {
          
         if(optn[iu] != null && optn[iu].name == name) return interaction.replied ? await interaction.editReply({content: "You've already got that option name on another existing option. Make sure to change it! ;)", ephemeral: true}) : await interaction.editReply({content: "You've already got that option name on another existing option. Make sure to change it! ;)", ephemeral: true})
@@ -718,7 +695,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      console.log(emm[currentCOmmand])
+      
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -727,7 +704,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
 await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
           
-      console.log(await db.get(`currentMng_${interaction.user.id}`))
+      
       }
       })
     }
@@ -735,20 +712,20 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
       if(nm.includes(" ")) return interaction.reply({content: "You inputed the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
       let e = await db.get(`commands_${interaction.user.id}`)
-      console.log(e)
+      
       if(e == null) e = {}
       let ebutdif = e;
       ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false}
-      console.log(ebutdif)
-      console.log("up was ebutrif")
+      
+      
       await db.set(`commands_${interaction.user.id}`, ebutdif)
-      console.log(await db.get(`commands_${interaction.user.id}`))
+
       //hello there
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
       await interaction.reply({content: `**${interaction.fields.getTextInputValue("name")} command management**\n\nYour command has now got:\nName:${interaction.fields.getTextInputValue("name").toLowerCase()},\nDescription: ${interaction.fields.getTextInputValue("description")},\nOptions:${await db.get(`${`commands_${interaction.user.id}`}`).options}`, components: [roww], ephemeral:true})
       interaction.fetchReply().then(async inte => {
-        console.log(inte);
+        
         //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
       })
     };
@@ -757,20 +734,19 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
       if(nm.includes(" ")) return interaction.reply({content: "You inputed the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
       let e = await db.get(`commands_${interaction.user.id}`)
-      console.log(e)
+      
       if(e == null) e = {}
       let ebutdif = e;
       ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": false, "made": false}
-      console.log(ebutdif)
-      console.log("up was ebutrif")
+
       await db.set(`commands_${interaction.user.id}`, ebutdif)
-      console.log(await db.get(`commands_${interaction.user.id}`))
+
       //hello there
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
       await interaction.reply({content: `**${interaction.fields.getTextInputValue("name")} command management**\n\nYour command has now got:\nName:${interaction.fields.getTextInputValue("name").toLowerCase()},\nDescription: ${interaction.fields.getTextInputValue("description")},\nOptions:${await db.get(`${`commands_${interaction.user.id}`}`).options}`, components: [roww], ephemeral:true})
       interaction.fetchReply().then(async inte => {
-        console.log(inte);let eeee = require("quick.db")
+        
         //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
       })
     }
@@ -783,10 +759,10 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
         "headers": {"authorization": `Bot ${process.env.token}`}
       }).then(async j => {
         let suske = await j.json()
-        console.log(suske)
+        
         if(suske.bot == false || j.status != 200) return interaction.reply({content: "You've inputted the wrong client ID. Double check! ;)",ephemeral: true})
         else {
-          console.log(clientid)
+          
       await db.set(`clientid_${interaction.user.id}`, clientid.toString())
       //let intr = await db.get(`currentInteraction_${interaction.user.id}`)
       let btn = new Discord.MessageButton()
@@ -814,7 +790,7 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
         "method": "GET",
         "headers": {"Authorization": `Bot ${tkn}`}
       }).then(async suss => {
-        console.log(suss.status)
+        
         if(suss.status == 401) return interaction.reply({content: "You've inputted a wrong token! Double check ;)", ephemeral: true})
         else {
           await db.set(`botToken_${interaction.user.id}`, tkn)
