@@ -3,14 +3,14 @@ const Discord = require("discord.js");
 const app = express();
 process.on('unhandledRejection', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('uncaughtException', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
-process.on('exit', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('exit', async err => (await client.channels.fetch('1047257458835472536')).send(err).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('multipleResolves', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 app.get('/', (req, res) => {
   res.send('Hello Express app!')
 });
 app.listen(3000, () => {
   console.log('server started');
-});
+}); //hi
 let dtb = require("@replit/database");
 
 let datab = new (require("@replit/database"))(atob(process.env.databaseKey));
@@ -21,6 +21,36 @@ const source = new Discord.MessageButton()
 .setLabel("Source code")
 .setStyle("LINK")
 .setURL("https://github.com/Aljoberg/Slash-register-bot")
+let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
+      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
+      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS")
+        let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
+        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
+      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
+let styleOptions = optionsobj => {
+  let optns = {
+    3: "string",
+    4: "number",
+    5: "boolean (true or false)",
+    6: "user",
+    7: "channel",
+    8: "role",
+    9: "everything mentionable",
+    11: "attachment"
+  };
+  let strig = "\n";
+  let choicesstrig = "the choices:\n";
+  if(optionsobj["choices"].length != 0) {
+    for(let i = 0;i<optionsobj["choices"].length;i++){
+      choicesstrig += `\`${optionsobj["choices"][i]["name"]}\`, and has the value ${optionsobj["choices"][i]["value"]}`;
+    }
+  }
+  for(let i = 0;i<optionsobj.length;i++) {
+    let optionsobjec = optionsobj[i];
+    strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] || optionsobjec["choices"].length != 0 ? choicesstrig : "no choices"}.`
+  }
+  return strig;
+}
 client.on("interactionCreate", async interaction => {
   if(interaction.isCommand()) {
     if(interaction.commandName=="eval") {
@@ -359,14 +389,15 @@ if(interaction.customId == "guildidinput") {
         "body": JSON.stringify(body)
       }).catch(err => console.error(err)).then(async f => {
         console.log(f.status)
-        let zuzu = await f.json();
-        commandObj["id"] = `${zuzu.id}`;
-        commandObj["made"] = true;
-      cmds[`${current}`] = commandObj;
+        
       
       await db.set(`commands_${interaction.user.id}`, cmds)
         if(f.status == 201 || f.status == 200) {
           console.log("breadsu")
+          let zuzu = await f.json();
+        commandObj["id"] = `${zuzu.id}`;
+        commandObj["made"] = true;
+      cmds[`${current}`] = commandObj;
           interaction.editReply({content: "It worked! Try going on your slash commands interface.", ephemeral: true})
         } else {
           //let jso = await f.json();
@@ -430,14 +461,8 @@ if(interaction.customId == "guildidinput") {
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
          
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS")
-         let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
      
      }, 2000)
@@ -522,14 +547,8 @@ if(interaction.customId == "guildidinput") {
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
          
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS")
-         let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
      
      }, 2000)
@@ -548,13 +567,7 @@ if(interaction.customId == "guildidinput") {
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS");
-     let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
       //    if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true})
         await interaction.editReply({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
    }
@@ -599,7 +612,10 @@ if(interaction.customId == "guildidinput") {
      let e = new Discord.TextInputComponent()
      .setCustomId("choicename")
      .setMinLength(3).setMaxLength(15).setLabel('What should be the choice\'s name?').setStyle("SHORT").setRequired(true);
-   let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(e)).setCustomId("choicemodal").setTitle("Choice info input")
+     let e2us = new Discord.TextInputComponent()
+     .setCustomId("choicevalue")
+     .setMinLength(3).setMaxLength(15).setLabel('What should be the choice\'s value?').setStyle("SHORT").setRequired(true);
+   let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(e), new Discord.MessageActionRow().addComponents(e2us)).setCustomId("choicemodal").setTitle("Choice info input")
 await interaction.showModal(modal);
    }
    
@@ -614,10 +630,9 @@ await interaction.showModal(modal);
        else {
          if(key.name == selec) {
          if(!key.choices) key.choices = []
-         key["choices"].push({"name": interaction.fields.getTextInputValue("choicename"), "value": interaction.fields.getTextInputValue("choicename")})
+         key["choices"].push({"name": interaction.fields.getTextInputValue("choicename"), "value": interaction.fields.getTextInputValue("choicevalue")})
          await db.set(`commands_${interaction.user.id}`, cmds)
          let emm = await db.get(`commands_${interaction.user.id}`)
-      let db2 = require("quick.db")
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
@@ -625,14 +640,8 @@ await interaction.showModal(modal);
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
          
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS")
-         let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
         interaction.update({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
        }
        }
@@ -691,13 +700,8 @@ await interaction.showModal(modal);
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS")
-        let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+      
     //   if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true});
 await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
@@ -723,13 +727,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + require("util").inspect(optionss.options)
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS");
-        let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
+          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
       //    if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true})
 await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
@@ -759,18 +757,12 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       console.log("up was ebutrif")
       await db.set(`commands_${interaction.user.id}`, ebutdif)
       console.log(await db.get(`commands_${interaction.user.id}`))
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS");
-      let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
       //hello there
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
       await interaction.reply({content: `**${interaction.fields.getTextInputValue("name")} command management**\n\nYour command has now got:\nName:${interaction.fields.getTextInputValue("name").toLowerCase()},\nDescription: ${interaction.fields.getTextInputValue("description")},\nOptions:${await db.get(`${`commands_${interaction.user.id}`}`).options}`, components: [roww], ephemeral:true})
       interaction.fetchReply().then(async inte => {
-        console.log(inte);let eeee = require("quick.db")
+        console.log(inte);
         //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
       })
         
@@ -789,12 +781,6 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       console.log("up was ebutrif")
       await db.set(`commands_${interaction.user.id}`, ebutdif)
       console.log(await db.get(`commands_${interaction.user.id}`))
-      let optionMakeButton = new Discord.MessageButton().setLabel("Make a slash command option").setCustomId("optionButton").setStyle("SUCCESS")
-      let choiceMakeButton = new Discord.MessageButton().setLabel("Make a choice on an option").setCustomId("choiceButton").setStyle("SUCCESS")
-      let subcommandMakeButton = new Discord.MessageButton().setLabel("Make a subcommand!").setCustomId("subcommandButton").setStyle("SUCCESS");
-      let deleteOption = new Discord.MessageButton().setLabel("Delete an option!").setCustomId("deleteOptionButton").setStyle("DANGER");
-        let deleteChoice = new Discord.MessageButton().setCustomId("deleteChoiceButton").setLabel("Delete a choice from an option!").setStyle("DANGER");
-      let exitandmake = new Discord.MessageButton().setLabel("Exit and make the command").setCustomId("exitAndMake").setStyle("SECONDARY")
       //hello there
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
