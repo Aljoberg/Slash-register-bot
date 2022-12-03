@@ -40,7 +40,7 @@ let styleOptions = optionsobj => {
   };
   let strig = "\n";
   let choicesstrig = "the choices:\n";
-  if(optionsobj["choices"].length != 0) {
+  if(optionsobj["choices"]) {
     for(let i = 0;i<optionsobj["choices"].length;i++){
       choicesstrig += `\`${optionsobj["choices"][i]["name"]}\`, and has the value ${optionsobj["choices"][i]["value"]}`;
     }
