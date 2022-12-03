@@ -47,7 +47,7 @@ let styleOptions = optionsobj => {
   }
   for(let i = 0;i<optionsobj.length;i++) {
     let optionsobjec = optionsobj[i];
-    strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] || optionsobjec["choices"].length != 0 ? choicesstrig : "no choices"}.`
+    strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] ? choicesstrig : "no choices"}.`
   }
   return strig;
 }
@@ -69,9 +69,6 @@ client.on("interactionCreate", async interaction => {
     if (!code) {
       return interaction.reply("Oi u forgot code");
     }
-    
-    
-
     try {
       let evalCode = code.includes(`await`)
         ? `;(async () => { ${code} })().then(output => output)`
@@ -103,8 +100,6 @@ client.on("interactionCreate", async interaction => {
         .addField("Error", `\`\`\`js\n${err}\n\`\`\``);
       interaction.reply({embeds: [errorEmb], ephemeral: true});
     }
-  
-    
     }
     if(interaction.commandName == "slash") {
       if(interaction.options.getSubcommand() == "setup") {
@@ -733,18 +728,9 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
           
       console.log(await db.get(`currentMng_${interaction.user.id}`))
-      
-        //}
-        
-        
-      
       }
       })
-      
-      
-      
     }
-    
     if(interaction.customId == "infomodalguild") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
       if(nm.includes(" ")) return interaction.reply({content: "You inputed the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
@@ -765,8 +751,6 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
         console.log(inte);
         //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
       })
-        
-      
     };
       //suske
     if(interaction.customId == "infomodalglobal") {
@@ -789,8 +773,6 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
         console.log(inte);let eeee = require("quick.db")
         //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
       })
-        
-      
     }
 //suske #
     if(interaction.customId == "modalclientidrealguild") {
