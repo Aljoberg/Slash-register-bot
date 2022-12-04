@@ -107,6 +107,10 @@ client.on("interactionCreate", async interaction => {
     }
     }
     if(interaction.commandName == "slash") {
+      if(interaction.options.getSubcommand() == "whatnow") {
+        await interaction.reply({content: `Alright, so let's say you just registered your command. You want to use it, right? Well, Discord has a complicated API on that, but if I sum it up, you need the bot to either:\n- Be online and listening to the gateway events\n- Be configured on a webhook on your webapp.\nThese both seem complicated (the whole official documentation is [here](https://discord.com/developers/docs "click here for the docs")), but luckily, there's a lot of wrappers (most used ones being discord.js and discord.py) to help you code it. There's documentations on these as well [djs](https://discordjs.guide), [dpy](https://discordpy.readthedocs.io), so you can access them anytime. There's tutorials on how to use the slash commands there, or you can just google it. All you need is a compiler for node.js or python ;)\nIf you want an example, here's the discord.js one:\n\`\`\`js\nlet Discord = require("discord.js");\nlet client = new Discord.Client({intents: ["GUILDS"]});\nclient.on("interactionCreate", async interaction => {\n 
+ if(interaction.commandName == "your command name here") await interaction.reply("Your reply content here");\n});\nclient.login("your bot's token here (use \`/slash info\` to get it, if you don't know how to)");\`\`\`\nHave fun!`});
+      }
       if(interaction.options.getSubcommand() == "setup") {
         await interaction.reply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Change token").setStyle("PRIMARY"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true});//notchangetoken
       }
@@ -814,5 +818,6 @@ client.on("ready", () => console.log("im ready"))
 client.on("ready", async () => {
   console.log(`${client.user.tag} is redy and is in ${client.guilds.cache.size} servers ඞ`);
   client.user.setActivity("the newly created commands", {type: "WATCHING"});
+
 });
-client.login(process.env.token)
+//client.login(process.env.token)
