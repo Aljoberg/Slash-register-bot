@@ -823,4 +823,4 @@ client.on("ready", async () => {
   client.user.setActivity("the newly created commands", {type: "WATCHING"});
 
 });
-  //client.login(process.env.token)
+client.login(process.env.token)
