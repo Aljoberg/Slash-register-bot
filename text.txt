@@ -1,2 +1,4 @@
 command managemt
 [make an option] | [make a choice on an option] | [make a subcommand] | [finish and create the command]
+
+for anyone that wants to know wtf this is, its basically for me to imagine what the main command management screen would look like lol

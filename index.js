@@ -108,7 +108,7 @@ client.on("interactionCreate", async interaction => {
     }
     if(interaction.commandName == "slash") {
       if(interaction.options.getSubcommand() == "info") {
-        await interaction.reply({content: `Hello! You seem to be wondering, what this bot is for, or what the whole Discord Bot things are. So, to start from the beggining: a Discord bot is an integration, which can log into the API like you and perform some actions.\nYour next question would probably be: "Well, how to make one?"\nDiscord has a website for creating these: <https://discord.com/developers>. You can create bots and some presence stuff there.\nTo start, click "New Application" and input your bot's name there. Then, go to the "bot" section, click "add bot", pick an avatar if you like and click "reset token" (and copy it afterwards).\nBy the way, anyone can access your bot if they have the token, so be careful.\nThen, go to the "Oauth2" section and click the subcategory "url generator". Then, select the "bot" scope, add the bot's permissions, copy the URL at the bottom and paste it into your browser. Then, invite the bot and boom! It's in the server. You can now register the bot's commands (</slash register:985984380096901140> :wink:) and proceed to </slash whatnow:985984380096901140>.\n\n**This bot** was created using the API as well, using the wrapper [discord.js](<https://discord.js.org> "djs docs"). The source code is [here](<https://github.com/Aljoberg/Slash-register-bot> "The source"), the support server is [here](<https://discord.gg/YHJfQ4Enz9> "the support server").\nDeveloped by Aljo#9481, have fun using the bot! :D`, ephemeral: true})
+        await interaction.reply({content: `Hello! You seem to be wondering, what this bot is for, or what the whole Discord Bot things are. So, to start from the beggining: a Discord bot is an integration, which can log into the API like you and perform some actions.\nYour next question would probably be: "Well, how to make one?"\nDiscord has a website for creating these: <https://discord.com/developers>. You can create bots and some presence stuff there.\nTo start, click "New Application" and input your bot's name there. Then, go to the "bot" section, click "add bot", pick an avatar if you like and click "reset token" (and copy it afterwards).\nBy the way, anyone can access your bot if they have the token, so be careful.\nThen, go to the "Oauth2" section and click the subcategory "url generator". Then, select the "bot" scope, add the bot's permissions, copy the URL at the bottom and paste it into your browser. Then, invite the bot and boom! It's in the server. You can now register the bot's commands (</slash register:985984380096901140> :wink:) and proceed to </slash whatnow:985984380096901140>.\n\n**This bot** was created using the API as well, using the wrapper [discord.js](<https://discord.js.org> "djs docs"). The source code is [here](<https://github.com/Aljoberg/Slash-register-bot> "The source"), the support server is [here](<https://discord.gg/YHJfQ4Enz9> "the support server").\n\nBot stats:\nTotal commands made: ${(await db.get("totalCommandsRegistered"))}\nTotal servers: ${client.guilds.cache.size}\n\n This bot was made for people that don't know how to make a slash command and simplify the whole process for them.\nHave fun using the bot! Developed by Aljo#9481 :D`, ephemeral: true});
       }
       if(interaction.options.getSubcommand() == "whatnow") {
         await interaction.reply({content: `Alright, so let's say you just registered your command. You want to use it, right? Well, Discord has a complicated API on that, but if I sum it up, you need the bot to either:\n- Be online and listening to the gateway events\n- Be configured on a webhook on your webapp.\nThese both seem complicated (the whole official documentation is [here](<https://discord.com/developers/docs> "click here for the docs")), but luckily, there's a lot of wrappers (most used ones being discord.js and discord.py) to help you code it. There's documentations on these as well ([discord.js](<https://discordjs.guide> "discord.js tutorial website"), [discord.py](<https://discordpy.readthedocs.io> "discord.py tutorial website")), so you can access them anytime. There's tutorials on how to use the slash commands there, or you can just google it. All you need is a compiler for node.js or python ;)\nIf you want an example, here's the discord.js one:\n\`\`\`js\nlet Discord = require("discord.js");\nlet client = new Discord.Client({intents: ["GUILDS"]});\nclient.on("interactionCreate", async interaction => {\n 
@@ -393,7 +393,7 @@ if(interaction.customId == "guildidinput") {
           "Content-Type": "application/json"
         },
         "body": JSON.stringify(body)
-      }).catch(err => console.error(err)).then(async f => {
+      }).catch(console.error).then(async f => {
       await db.set(`commands_${interaction.user.id}`, cmds)
         if(f.status == 201 || f.status == 200) {
           
@@ -401,10 +401,12 @@ if(interaction.customId == "guildidinput") {
         commandObj["id"] = `${zuzu.id}`;
         commandObj["made"] = true;
       cmds[`${current}`] = commandObj;
-          interaction.editReply({content: "It worked! Try going on your slash commands interface.", ephemeral: true})
+          interaction.editReply({content: "It worked! Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)", ephemeral: true})
+          await db.set("totalCommandsRegistered", (await db.get("totalCommandsRegistered")) + 1);
+          (await client.channels.fetch("1047257458835472536")).send(`New command registered :D\we now have ${await db.get("totalCommandsRegistered")} commands`);
         } else {
           //let jso = await f.json();
-         interaction.editReply({content: "It did not work ... here's the JSON: " + JSON.stringify(zuzu), ephemeral: true})
+         interaction.editReply({content: `It did not work ... go to our [support server](<https://discord.gg/YHJfQ4Enz9> "support server") and send this:\n\`${JSON.stringify(zuzu)}\``, ephemeral: true}); 
         }
       })
     }//oj
@@ -461,9 +463,6 @@ if(interaction.customId == "guildidinput") {
         await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
      
      }, 2000)
-     
-
-     
    }
    if(interaction.customId == "deleteoptionforchoicemenu") {
      let vuvuv = interaction.values[0];
@@ -497,12 +496,9 @@ if(interaction.customId == "guildidinput") {
          });
            await db.set(`currentEditingChoiceOption_${interaction.user.id}`, vuvuv)
          await interaction.update({content: "Choose the choices to delete!", components: [new Discord.MessageActionRow().addComponents(mn)], ephemeral: true})
-          
          }
-     
        }  
        }
-       
      }
    }
    if(interaction.customId == "deleteoptionmenu") {
@@ -534,12 +530,8 @@ if(interaction.customId == "guildidinput") {
       let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
           let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
          
-        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
-     
-     }, 2000)
-     
-
-     
+        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
+     }, 2000);
    }
    if(interaction.customId == "modifySelection") {
      
@@ -717,7 +709,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
     }
     if(interaction.customId == "infomodalguild") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
-      if(nm.includes(" ")) return interaction.reply({content: "You inputted the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
+      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({content: "You inputted the command with a character that's not allowed in it. Please remove it and do the command again :)", ephemeral: true});
       let e = await db.get(`commands_${interaction.user.id}`)
       
       if(e == null) e = {}
@@ -739,7 +731,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       //suske
     if(interaction.customId == "infomodalglobal") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
-      if(nm.includes(" ")) return interaction.reply({content: "You inputed the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
+      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({content: "You inputed the command with a character that's not allowed. Please remove it and do the command again :)", ephemeral: true})
       let e = await db.get(`commands_${interaction.user.id}`)
       
       if(e == null) e = {}
@@ -793,7 +785,7 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
     if(interaction.customId == "modaltokeninpute") {
       let tkn = interaction.fields.getTextInputValue("token");
       let fetchus = require("node-fetch");
-      await fetchus("https://discord.com/api/v9/users/@me/guilds", {
+      await fetchus("https://discord.com/api/v9/users/@me", {
         "method": "GET",
         "headers": {"Authorization": `Bot ${tkn}`}
       }).then(async suss => {
