@@ -717,12 +717,12 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
     }
     if(interaction.customId == "infomodalguild") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
-      if(nm.includes(" ")) return interaction.reply({content: "You inputed the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
+      if(nm.includes(" ")) return interaction.reply({content: "You inputted the command with a **space**. Please remove it and do the command again :)", ephemeral: true})
       let e = await db.get(`commands_${interaction.user.id}`)
       
       if(e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false}
+      ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false, "options": []}
       
       
       await db.set(`commands_${interaction.user.id}`, ebutdif)
@@ -744,7 +744,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       
       if(e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": false, "made": false}
+      ebutdif[`${nm}`] = {"description": `${interaction.fields.getTextInputValue("description")}`, "guild": false, "made": false, "options": []}
 
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
