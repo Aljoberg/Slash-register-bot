@@ -120,7 +120,7 @@ client.on("interactionCreate", async interaction => {
         await interaction.deferReply({ephemeral: true});
         let mogus = await db.get(`hasCompletedSetup_${interaction.user.id}`);
         
-        mogus == true ? await interaction.editReply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Change token").setStyle("PRIMARY"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true}) : await interaction.editReply({content: "Click the \"Setup\" button to set up your preferences ;)", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Setup"))], ephemeral: true});
+        mogus == true ? await interaction.editReply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Delete token").setStyle("DANGER"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true}) : await interaction.editReply({content: "Click the \"Setup\" button to set up your preferences ;)", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Setup"))], ephemeral: true});
       }
       if(interaction.options.getSubcommand() == "register") {
         await interaction.deferReply({ephemeral: true});
