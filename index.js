@@ -1,6 +1,7 @@
 const express = require('express');
 const Discord = require("discord.js");
 const app = express();
+const fetch = require(`node-fetch`)
 process.on('unhandledRejection', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('uncaughtException', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('exit', async err => (await client.channels.fetch('1047257458835472536')).send(err).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
@@ -12,7 +13,12 @@ app.listen(3000, () => { //leave that if ya want
   console.log('server started');
 }); //hi
 let dtb = require("@replit/database");
-
+let colors = {
+  red: 15548997,
+  blue: 3447003,
+  green: 5763719,
+  yellow: 16705372
+}
 let datab = new (require("@replit/database"))(atob(process.env.databaseKey));
 
 let db = datab; //hi
@@ -48,10 +54,10 @@ let styleOptions = optionsobj => {
     if(optionsobj[i]["choices"]) {
     for(let i2 = 0; i2 < optionsobj[i]["choices"].length;i2++){
       if(!optionsobj[i]["choices"][i2]) continue;
-      choicesstrig += `\`${optionsobj[i]["choices"][i2]["name"]}\`, and has the value ${optionsobj[i]["choices"][i2]["value"]}`; //dont delte anytihng lol
+      choicesstrig += `ㅤㅤ\`${optionsobj[i]["choices"][i2]["name"]}\`, and has the value \`${optionsobj[i]["choices"][i2]["value"]}\``; //dont delte anytihng lol
     }// well uh, the thing is... more formatted code looks better and more understandable than uh,,,, this well yeah but idrc, just so it works nah jk but its good like this uh ok
   }
-    strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] ? choicesstrig : "no choices"}.`
+    strig += `\`${optionsobjec["name"]}\`, which's got the description \`${optionsobjec["description"]}\`, ${optionsobjec["required"] == true ? "is" : "isn't"} required, is the \`${optns[optionsobjec["type"]]}\` type and has ${optionsobjec["choices"] ? choicesstrig : "no choices"}.\n`
   }
 
   return strig != "\n" ? strig.replace("the choices:\n.", "no choices.") : "None"//im lazy to filter everything dude
@@ -61,8 +67,8 @@ client.on("interactionCreate", async interaction => {
     if(interaction.commandName=="eval") {
 
     
-  let e = ["738354468709597227"]
-    if(!e.includes(interaction.user.id)) return interaction.reply({content: "This is only for the devs", ephemeral:true})
+  let e = ["738354468709597227"/*, `800985072014196756`*/] //um
+    if(!e.includes(interaction.user.id)) return interaction.reply({embeds: [{description: "This is only for the developers."}], ephemeral:true})
     const clean = async (text) => {
       
       if (typeof text === "string")
@@ -106,28 +112,51 @@ client.on("interactionCreate", async interaction => {
       interaction.reply({embeds: [errorEmb], ephemeral: true});
     }
     }
-    if(interaction.commandName == "slash") {
+    if(interaction.commandName == "slash") {// damn :pensive: whts wrong lolm I feel humiliated, jk jk jk im sorry lol youre doing a good job but it'd be weird if there would be random variables that aren't needed which arent in the rest of the code and theyd think that someone helped me (and i dont give credits to anyone else so that'd be weird :technodead:)
+      //i can credit you as well tho lol nah your good, also te ill just say you helped too and stuf
       if(interaction.options.getSubcommand() == "info") {
-        await interaction.deferReply({ephemeral: true});
-        await interaction.editReply({content: `Hello! You seem to be wondering, what this bot is for, or what the whole Discord Bot things are. So, to start from the beggining: a Discord bot is an integration, which can log into the API like you and perform some actions.\nYour next question would probably be: "Well, how to make one?"\nDiscord has a website for creating these: <https://discord.com/developers>. You can create bots and some presence stuff there.\nTo start, click "New Application" and input your bot's name there. Then, go to the "bot" section, click "add bot", pick an avatar if you like and click "reset token" (and copy it afterwards).\nBy the way, anyone can access your bot if they have the token, so be careful.\nThen, go to the "Oauth2" section and click the subcategory "url generator". Then, select the "bot" scope, add the bot's permissions, copy the URL at the bottom and paste it into your browser. Then, invite the bot and boom! It's in the server. You can now register the bot's commands (</slash register:985984380096901140> :wink:) and proceed to </slash whatnow:985984380096901140>.\n\n**This bot** was created using the API as well, using the wrapper [discord.js](<https://discord.js.org> "djs docs"). The source code is [here](<https://github.com/Aljoberg/Slash-register-bot> "The source"), the support server is [here](<https://discord.gg/YHJfQ4Enz9> "the support server").You can donate [here](<https://buymeacoffee.com/aljo9481> "donate here lol") if you want :)\n\nBot stats:\nTotal commands made: ${(await db.get("totalCommandsRegistered"))}\nTotal servers: ${client.guilds.cache.size}\n\n This bot was made for people that don't know how to make a slash command and simplify the whole process for them.\nHave fun using the bot! Developed by Aljo#9481 :D`, ephemeral: true});
+        await interaction.deferReply({ephemeral: true}); //shh, gotta follow the style of the code
+        await interaction.editReply({
+          embeds: [ new Discord.MessageEmbed().setTitle("Info about Slash Register").setDescription(`Hello! You seem to be wondering, what this bot is for, or what the whole Discord Bot things are. So, to start from the beggining: a Discord bot is an integration, which can log into the API like you and perform some actions.\nYour next question would probably be: "Well, how to make one?"\nDiscord has a website for creating these: <https://discord.com/developers>. You can create bots and some presence stuff there.\nTo start, click "New Application" and input your bot's name there. Then, go to the "bot" section, click "add bot", pick an avatar if you like and click "reset token" (and copy it afterwards).\nBy the way, anyone can access your bot if they have the token, so be careful.\nThen, go to the "Oauth2" section and click the subcategory "url generator". Then, select the "bot" scope, add the bot's permissions, copy the URL at the bottom and paste it into your browser. Then, invite the bot and boom! It's in the server. You can now register the bot's commands (</slash register:985984380096901140> :wink:) and proceed to </slash whatnow:985984380096901140>.\n\n**This bot** was created using the API as well, using the wrapper [discord.js](<https://discord.js.org> "djs docs").`)
+            .addFields({
+              name: "Bot stats:",
+              value: `Total commands made: ${(await db.get("totalCommandsRegistered"))}\nTotal servers: ${client.guilds.cache.size}`
+            },{
+              name: "Why was this bot made?",
+              value: "This bot was made for people that don't know how to make a slash command and simplify the whole process for them.\nHave fun using the bot!"
+            },{
+              name: "Support",
+              value: `Support my creator: [Buy me a coffee](<https://buymeacoffee.com/aljo9481> "donate here lol")\nSupport server: [Slash Register Support](<https://discord.gg/YHJfQ4Enz9> "the support server")\nSource code: [Slash Register Source](<https://github.com/Aljoberg/Slash-register-bot> "The source")`
+            }).setColor("GREEN").setFooter({
+              text: `Developed by Aljo#9481 :D`,
+              iconURL: (await client.users.fetch("738354468709597227")).displayAvatarURL()
+            })
+          ], ephemeral: true
+        });
       }
       if(interaction.options.getSubcommand() == "whatnow") {
         await interaction.deferReply({ephemeral: true});
-        await interaction.editReply({content: `Alright, so let's say you just registered your command. You want to use it, right? Well, Discord has a complicated API on that, but if I sum it up, you need the bot to either:\n- Be online and listening to the gateway events\n- Be configured on a webhook on your webapp.\nThese both seem complicated (the whole official documentation is [here](<https://discord.com/developers/docs> "click here for the docs")), but luckily, there's a lot of wrappers (most used ones being discord.js and discord.py) to help you code it. There's documentations on these as well ([discord.js](<https://discordjs.guide> "discord.js tutorial website"), [discord.py](<https://discordpy.readthedocs.io> "discord.py tutorial website")), so you can access them anytime. There's tutorials on how to use the slash commands there, or you can just google it. All you need is a compiler for node.js or python ;)\nIf you want an example, here's the discord.js one:\n\`\`\`js\nlet Discord = require("discord.js");\nlet client = new Discord.Client({intents: ["GUILDS"]});\nclient.on("interactionCreate", async interaction => {\n 
- if(interaction.commandName == "your command name here") await interaction.reply("Your reply content here");\n});\nclient.login("your bot's token here (use \`/slash info\` to get it, if you don't know how to)");\`\`\`\nHave fun!`, ephemeral: true});
-      }
+        await interaction.editReply({
+          embeds: [new Discord.MessageEmbed().setTitle("What do I do now?").setDescription(`Alright, so let's say you just registered your command. You want to use it, right? Well, Discord has a complicated API on that, but if I sum it up, you need the bot to either:\n- Be online and listening to the gateway events\n- Be configured on a webhook on your webapp.\nThese both seem complicated (the whole official documentation is [here](<https://discord.com/developers/docs> "click here for the docs")), but luckily, there's a lot of wrappers (most used ones being discord.js and discord.py) to help you code it. There's documentations on these as well ([discord.js](<https://discordjs.guide> "discord.js tutorial website"), [discord.py](<https://discordpy.readthedocs.io> "discord.py tutorial website")), so you can access them anytime. There's tutorials on how to use the slash commands there, or you can just google it. All you need is a compiler for node.js or python ;)\nIf you want an example, here's the discord.js one:\n\`\`\`js\nlet Discord = require("discord.js");\nlet client = new Discord.Client({intents: ["Guilds"]});\n\nclient.on("interactionCreate", async interaction => {
+  if(interaction.commandName == "your command name here"){    
+     await interaction.reply("Your reply content here")
+  };\n});\n\nclient.login("your bot's token here (use \`/slash info\` to get it, if you don't know how to)");\`\`\`\nHave fun!`).setColor("BLUE")
+          ], ephemeral: true
+        });
+      };
+      
       if(interaction.options.getSubcommand() == "setup") {
         await interaction.deferReply({ephemeral: true});
         let mogus = await db.get(`hasCompletedSetup_${interaction.user.id}`);
-        
-        mogus == true ? await interaction.editReply({content: "Do you wish to delete your token or change any option?", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Delete token").setStyle("DANGER"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true}) : await interaction.editReply({content: "Click the \"Setup\" button to set up your preferences ;)", components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Setup"))], ephemeral: true});
+        //hlo im on pc now
+        mogus == true ? await interaction.editReply({embeds: [new Discord.MessageEmbed().setTitle("Setup").setDescription("Do you wish to delete your token or change any option?")], components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("yeschangetoken").setLabel("Delete token").setStyle("DANGER"), new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Don't change token, run through the setup again"))], ephemeral: true}) : await interaction.editReply({embeds: [new Discord.MessageEmbed().setTitle("Setup").setDescription("Click the \"Setup\" button to set up your preferences ;)")], components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setCustomId("notchangetoken").setStyle("PRIMARY").setLabel("Setup"))], ephemeral: true});
       }
       if(interaction.options.getSubcommand() == "register") {
         await interaction.deferReply({ephemeral: true});
         let sussuss = await db.get(`commands_${interaction.user.id}`)
         if(sussuss == null) sussuss = {}
         let lakaka = Object.keys(sussuss).length;
-        if(lakaka == 25) return interaction.editReply({content: "You can only have 25 commands per account. We'll make an option to pay soon :) Thanks for supporting us!", ephemeral: true})
+        if(lakaka == 25) return interaction.editReply({embeds: [new Discord.MessageEmbed().setDescription("You can only have 25 commands per account. We'll make an option to pay soon :) Thanks for supporting us!").setColor("RED")], ephemeral: true})
 let m = new Discord.MessageButton()
       .setLabel("Guild commands")
       .setStyle("PRIMARY")
@@ -138,38 +167,38 @@ let m = new Discord.MessageButton()
       .setCustomId("global")
         let clientid = await db.get(`clientid_${interaction.user.id}`)
         //interaction.deferReply(); 
-        if(clientid == null) return interaction.editReply({content: "You haven't completed your setup yet. Run `/slash setup` to set up your preferences!", ephemeral: true})
-      let inte = await interaction.editReply({content: "Okay. What type of a slash command do you want?", components: [new Discord.MessageActionRow().addComponents(m, e)], ephemeral: true, fetchReply: true})
+        if(clientid == null) return interaction.editReply({embeds: [new Discord.MessageEmbed().setDescription("You haven't completed your setup yet. Run `/slash setup` to set up your preferences!").setColor("RED")], ephemeral: true})
+      let inte = await interaction.editReply({embeds: [{description: /*im lazy to use classes*/"Okay. What type of a slash command do you want?", color: colors.blue}], components: [new Discord.MessageActionRow().addComponents(m, e)], ephemeral: true, fetchReply: true})
      let bread = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Guild commands").setLabel("Guild commands")
       .setStyle("PRIMARY")
       .setCustomId("guild").setDisabled(true), new Discord.MessageButton().setLabel("Global commands").setLabel("Global commands")
       .setStyle("PRIMARY")
       .setCustomId("global").setDisabled(true));
         let q = interaction.channel.createMessageComponentCollector({componentType: "BUTTON", max: 1})
-        q.on("collect", ie => {
-          interaction.editReply({content: inte.content, components: [bread], ephemeral: true})
+        q.on("collect", () => {
+          interaction.editReply({embeds: [{description: inte.embeds[0].description, color: colors.blue}], components: [bread], ephemeral: true})
+          q.stop();
         })
       }
       if(interaction.options.getSubcommand() == "delete") {
         await interaction.deferReply({ephemeral: true});
         let cmds = await db.get(`commands_${interaction.user.id}`)
-        if(cmds == null || !cmds || cmds == {}) return interaction.editReply({content: "You don't have any commands. Go create one with `/slash register`! ;)", ephemeral: true})
+        if(cmds == null || !cmds || cmds == {}) return interaction.editReply({embeds: [{description: "You don't have any commands. Go create one with </slash register:985984380096901140>! ;)", color: colors.red}], ephemeral: true})
         let brd = Object.keys(cmds).length
         let m = new Discord.MessageSelectMenu().setPlaceholder("Select a command!").setMinValues(1).setMaxValues(brd).setCustomId("deleteSelection")
         Object.keys(cmds).forEach(c => {
           let superil = cmds[c]["made"] == true ? `Made Command - ${c}` : `Not made Command - ${c}`;
-          m.addOptions([{"label": superil, "value": `${c}`}])
-          
+          m.addOptions([{"label": superil, "value": `${c}`}]);
         });
         
-        if(brd == 0) return interaction.editReply({content: "You've got no commands! Go create one using `/slash register` ;)", ephemeral: true})
-        await interaction.editReply({content: "Select commands to delete! ;)", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
+        if(brd == 0) return interaction.editReply({embeds: [{description: "You've got no commands! Go create one using `/slash register` ;)", color: colors.red}], ephemeral: true})
+        await interaction.editReply({embeds: [{description: "Select commands to delete! ;)", color: colors.blue}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
       }
       if(interaction.options.getSubcommand() == "modify") {
         await interaction.deferReply({ephemeral: true});
         let cmds = await db.get(`commands_${interaction.user.id}`)
-        if(cmds == null || !cmds || cmds == {}) return interaction.reply({content: "You don't have any commands. Go create one with `/slash register`! ;)", ephemeral: true})
-        let brd = Object.keys(cmds).length
+        if(cmds == null || !cmds || cmds == {}) return interaction.reply({embeds: [{description: "You don't have any commands. Go create one with `/slash register`! ;)", color: colors.red}], ephemeral: true})
+        let brd = Object.keys(cmds).length;
         let m = new Discord.MessageSelectMenu().setPlaceholder("Select a command!").setMinValues(1).setMaxValues(1).setCustomId("modifySelection")
         Object.keys(cmds).forEach(c => {
           let superil = cmds[c]["made"] == true ? `Made Command - ${c}` : `Not made Command - ${c}`;
@@ -177,8 +206,8 @@ let m = new Discord.MessageButton()
           
         });
         
-        if(brd == 0) return interaction.editReply({content: "You've got no commands! Go create one using `/slash register` ;)", ephemeral: true})
-        await interaction.editReply({content: "Select commands to modify! ;)", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
+        if(brd == 0) return interaction.editReply({embeds: [{description:"You've got no commands! Go create one using `/slash register` ;)", color: colors.red}], ephemeral: true})
+        await interaction.editReply({embeds: [{description: "Select commands to modify! ;)", color: colors.blue}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
       }
     }
   /*  if(interaction.commandName == "setup") {
@@ -191,46 +220,38 @@ let m = new Discord.MessageButton()
   if(interaction.isButton()) {
     if(interaction.customId == "yeschangetoken") {
       await db.delete(`botToken_${interaction.user.id}`)
-      interaction.reply({content:"Token deleted!", ephemeral: true})
+      interaction.reply({embeds:[{description:"Token deleted!", color: colors.blue}], ephemeral: true})
       await db.set(`hasCompletedSetup_${interaction.user.id}`, false);
     }
     if(interaction.customId == "notchangetoken") {
       let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
       //amogus
-     let intr = interaction.reply({content: "Welcome to the setup! Now, I'll leave a button labeled \"source\" on every one of these messages so you can always check the source code in case you don't trust the bot ;)\n\nSo, what's your client ID? (the bot's ID)", components: [row], ephemeral:true})
+     let intr = interaction.reply({embeds: [{description: "Welcome to the setup! Now, I'll leave a button labeled \"source\" on every one of these messages so you can always check the source code in case you don't trust the bot ;)\n\nSo, what's your client ID? (the bot's ID)", color: colors.blue}], components: [row], ephemeral:true})
       await db.set(`currentInteraction_${interaction.user.id}`, intr);
     }
     if(interaction.customId == "deleteChoiceButton") {
       let kakakakakaka = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let rftgzhujikol=await db.get(`commands_${interaction.user.id}`)
       let optns = rftgzhujikol[kakakakakaka].options;
-      if(!optns || optns == null) return await interaction.reply({content: "You don't have any options. Go create one!", ephemeral: true})
+      if(!optns || optns == null) return await interaction.reply({embeds: [{description:"You don't have any options. Go create one!", color: 15548997}], ephemeral: true})
 
       let isnull = optns.every(elm => elm === null)
-      if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
-      //let m = new Di
-      let su = 0;
-      Object.keys(optns).forEach(fofo => {
-        //ok so you have 81 consol.logs ik maybe another time
-        if(optns[fofo] != null) su = su + 1;
-      })
+      if(!optns || optns == null || isnull == true) return await interaction.reply({embeds: [{description: "You don't have any options. Go create one with the button!", color: colors.red}], ephemeral: true});
       let m = new Discord.MessageSelectMenu().setCustomId("deleteoptionforchoicemenu").setMinValues(1).setMaxValues(1);
-      
       Object.keys(optns).forEach(o => {
-
-        if(optns[o] == null) console.log("it was null :c")
-        else m.addOptions([{"label": `Option - ${optns[o].name}`, "value": `${optns[o].name}`}])
+        if(optns[o] == null) {}
+        else m.addOptions([{"label": `Option - ${optns[o].name}`, "value": `${optns[o].name}`}]);
       })
-      await interaction.update({content: "Select an option to delete the choice on!", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
+      await interaction.update({embeds: [{description: "Select an option to delete the choice on :)", color: colors.blue}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
     }
     if(interaction.customId == "deleteOptionButton") {
       let kakakakakaka = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let rftgzhujikol=await db.get(`commands_${interaction.user.id}`)
       let optns = rftgzhujikol[kakakakakaka].options
 
-      if(!optns || optns == null) return await interaction.reply({content: "You don't have any options. Go create one!", ephemeral: true})
+      if(!optns || optns == null) return await interaction.reply({embeds: [{description:"You don't have any options. Go create one!", color: colors.red}], ephemeral: true}); 
       let isnull = optns.every(elm => elm === null)
-      if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
+      if(!optns || optns == null || isnull == true) return await interaction.reply({embeds: [{description: "You don't have any options. Go create one with the button!", color: colors.red}], ephemeral: true});
       //let m = new Di
       let su = 0;
       Object.keys(optns).forEach(fofo => {
@@ -238,48 +259,45 @@ let m = new Discord.MessageButton()
       })
       let m = new Discord.MessageSelectMenu().setCustomId("deleteoptionmenu").setMinValues(1).setMaxValues(su);
       
-      Object.keys(optns).forEach(o => { //nah its good
- // hey u dont have to if u dont want, its okay kk
-        if(optns[o] == null) console.log("it was null :c") //leave these cuz its for the if
+      Object.keys(optns).forEach(o => {
+        if(optns[o] == null) {}
         else m.addOptions([{"label": `Option - ${optns[o].name}`, "value": `${optns[o].name}`}])
       })
-      await interaction.update({content: "Select options to delete!", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
+      await interaction.update({embeds: [{description: "Select options to delete!", color: colors.blue}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)]})
     }
     if(interaction.customId == "guild") {
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
-      if(ja == null || ja == false) return interaction.reply({content: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", ephemeral: true})
-      let mtut = await db.get(`registerMsg_${interaction.user.id}`)
-  
+      if(ja == null || ja == false) return interaction.reply({embeds: [{description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red}], ephemeral: true});
       
       /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
         realmtut.edit("hi")
         console.log(mtut.components)
         realmtut.edit({content: mtut.content, components: [realmtut.components[0]]})
       })*/
-     let eyourmom = await interaction.reply({content: "Alright, we're making a guild command. I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS"))], fetchReply: true})
+     let eyourmom = await interaction.reply({embeds: [{title: "Alright, we're making a guild command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name and description?", color: colors.blue}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS"))], fetchReply: true})
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({componentType: 'BUTTON', max: 1})
-q.on("collect", iqw => {
-  interaction.editReply({content: eyourmom.content, components: [r2]})
+q.on("collect", () => {
+  interaction.editReply({embeds: [eyourmom.embeds[0]], components: [r2]});
+  q.stop();
 })
     }
     //e
 if(interaction.customId == "global") {
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
-      if(ja == null || ja == false) return interaction.reply({content: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", ephemeral: true})
-      let mtut = await db.get(`registerMsg_${interaction.user.id}`)
-      
+      if(ja == null || ja == false) return interaction.reply({embeds: [{description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server.", color: colors.red}], ephemeral: true});
      
       /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
         realmtut.edit("hi")
         console.log(mtut.components)
         realmtut.edit({content: mtut.content, components: [realmtut.components[0]]})
       })*/
-     let eyourmom = await interaction.reply({content: "Alright, we're making a global command. I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?", ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS"))], fetchReply: true})
+     let eyourmom = await interaction.reply({embeds: [{title: "Alright, we're making a global command.", description: "I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?"}], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS"))], fetchReply: true})
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({componentType: 'BUTTON', max: 1})
-q.on("collect", iqw => {
-  interaction.editReply({content: eyourmom.content, components: [r2]})
+q.on("collect", () => {
+  interaction.editReply({embeds: eyourmom.embeds, components: [r2]});
+  q.stop();
 })
 }
 //ee
@@ -332,29 +350,9 @@ if(interaction.customId == "guildidinput") {
     }
     if(interaction.customId == "optionButton") {
       //uh
-      let guildid = new Discord.TextInputComponent()
-      .setCustomId("optionname")
-      .setLabel("Type in your option name")
-      .setMinLength(3)
-      .setMaxLength(10)
-      .setStyle("SHORT")
-      .setRequired(true)
+      let guildid = new Discord.TextInputComponent().setCustomId("optionname").setLabel("Type in your option name").setMinLength(3).setMaxLength(10).setStyle("SHORT").setRequired(true)
       let clientidrow = new Discord.MessageActionRow().addComponents(guildid)
-      let guildid2 = new Discord.TextInputComponent()
-      .setCustomId("optiondescription")
-      .setLabel("Type in your option description")
-      .setMinLength(5)
-      .setMaxLength(30)
-      .setStyle("SHORT")
-      /*let spridol = new Discord.MessageActionRow().addComponents(guildid)
-      let guildid2 = new Discord.TextInputComponent()
-      .setCustomId("optiontype")
-      .setLabel("Type in your option type! Refer to the placeholder")
-      .setMinLength(5)
-      .setMaxLength(30)
-      .setStyle("SHORT")
-      .setPlaceholder("1 for a string input,")*/
-      //.setRequired(true)
+      let guildid2 = new Discord.TextInputComponent().setCustomId("optiondescription").setLabel("Type in your option description").setMinLength(5).setMaxLength(30).setStyle("SHORT");
       let clientidrowee = new Discord.MessageActionRow().addComponents(guildid2)
       let modal = new Discord.Modal().addComponents(clientidrow, clientidrowee).setTitle("Option info input").setCustomId("modaloptioninput")
       await interaction.showModal(modal)
@@ -362,37 +360,29 @@ if(interaction.customId == "guildidinput") {
     
     if(interaction.customId == "choiceButton") {
       let menu = new Discord.MessageSelectMenu().setCustomId("choicemenu").setMaxValues(1).setMinValues(1).setPlaceholder("Select a slash option!")
-      let cmds = await db.get(`commands_${interaction.user.id}`)
-
-      if(!cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)]["options"]) return interaction.reply({content: "You don't have any options. Add one with the button! ;)", ephemeral: true})
+      let cmds = await db.get(`commands_${interaction.user.id}`);
+      let optns = cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)]["options"];
+      let isnull = optns.every(elm => elm === null)
+      if(!optns || optns == null || isnull == true) return interaction.reply({embeds: [{title: "You don't have any options.", description: "Add one with the button! ;)", color: colors.red}], ephemeral: true})
       for(let i = 0;i<cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)]["options"].length;i++) {
-        let key = cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)].options[i]
-        
-        if(key == null) console.log("nul")
+        let key = cmds[await db.get(`currentEditingCommand_${interaction.user.id}`)].options[i];
+        if(key == null) {}
         else {
-          let actualkey = key.name
-        menu.addOptions([{label: `Option: ${actualkey.toString()}`, value: actualkey.toString()}])
+          let actualkey = key.name;
+        menu.addOptions([{label: `Option: ${actualkey.toString()}`, value: actualkey.toString()}]);
         }
         
       }
       let rowww = new Discord.MessageActionRow().addComponents(menu)
-      await interaction.update({content: "Okay, we're making a choice on an option. What option should the choice be on?", components: [rowww], ephemeral: true})
+      await interaction.update({embeds: [{title: "Okay, we're making a choice on an option.", description: "What option should the choice be on?", color: colors.blue}], components: [rowww], ephemeral: true})
     }
     if(interaction.customId == "exitAndMake") {
       let cmds = await db.get(`commands_${interaction.user.id}`)
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
-      interaction.update({content: "Okay, registering the command.", components: []})
-      
-      //await interaction.deferReply({ephemeral: true})
-      let fetch = require("node-fetch");
-      let body = {
-            "name": `${current}`,
-            "description": `${commandObj.description}`
-          }
-      if(commandObj.hasOwnProperty("options")) {
-        body["options"] = commandObj.options
-      }
+      interaction.update({embeds: [{title:"Okay, registering the command."}], components: []});
+      let body = {"name": `${current}`,"description": `${commandObj.description}`}
+      if(commandObj.hasOwnProperty("options")) body["options"] = commandObj.options;
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
       
       await fetch(dussyUrl, {
@@ -410,12 +400,12 @@ if(interaction.customId == "guildidinput") {
         commandObj["id"] = `${zuzu.id}`;
         commandObj["made"] = true;
       cmds[`${current}`] = commandObj;
-          interaction.editReply({content: "It worked! Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)", ephemeral: true})
+          interaction.editReply({embeds: [{title: "It worked!",description: "Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)"}], ephemeral: true})
           await db.set("totalCommandsRegistered", (await db.get("totalCommandsRegistered")) + 1);
           (await client.channels.fetch("1047257458835472536")).send(`New command registered :D\nwe now have ${await db.get("totalCommandsRegistered")} commands`);
         } else {
           //let jso = await f.json();
-         interaction.editReply({content: `It did not work ... go to our [support server](<https://discord.gg/YHJfQ4Enz9> "support server") and send this:\n\`${JSON.stringify(zuzu)}\``, ephemeral: true}); 
+         interaction.editReply({embeds: [{description: `It did not work ... go to our [support server](<https://discord.gg/YHJfQ4Enz9> "support server") and send this:\n\`${JSON.stringify(zuzu)}\``}], ephemeral: true}); 
         }
       })
     }//oj
@@ -427,8 +417,6 @@ if(interaction.customId == "guildidinput") {
      let hujtkgfgimfg = await db.get(`commands_${interaction.user.id}`);
      let dgunfduhnfdgujhn = await db.get(`currentEditingCommand_${interaction.user.id}`);
      interaction.values.forEach(async v => {
-      
-       
        let optionnum;
        try {
          for(let superIdol = 0;superIdol<hujtkgfgimfg[dgunfduhnfdgujhn]["options"].length;superIdol++) {
@@ -451,7 +439,7 @@ if(interaction.customId == "guildidinput") {
            delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][optionnum]["choices"][lakakak];
 
           
-         await interaction.followUp({content: `Deleted ${v}!`, ephemeral: true});
+         await interaction.followUp({embeds: [{description: `Deleted ${v}!`}], ephemeral: true});
          }
          }
        }
@@ -466,10 +454,9 @@ if(interaction.customId == "guildidinput") {
       
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];
          
-        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
+        await interaction.followUp({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
      
      }, 2000)
    }
@@ -484,7 +471,7 @@ if(interaction.customId == "guildidinput") {
       
      for(let op1 = 0;op1<cm[cm2]["options"].length;op1++){
        let op2 = cm[cm2]["options"][op1]
-       if(op2 == null) console.log("nul it was")
+       if(op2 == null) {}
        else {
         
         
@@ -493,18 +480,21 @@ if(interaction.customId == "guildidinput") {
          let optns = cm[cm2]["options"]
          if(true) {
            let isnull = optns.every(elm => elm === null)
-      if(!optns || optns == null || isnull == true) return await interaction.reply({content: "You don't have any options. Go create one with the button!", ephemeral: true});
+      if(!optns || optns == null || isnull == true) return await interaction.reply({embeds: [{title: "You don't have any options.", description: "Go create one with the button!", color: colors.red}], ephemeral: true});
          let su = 0;
-      Object.keys(optns).forEach(fofo => {
+           if(!op.hasOwnProperty("choices")) return interaction.update({embeds: [{title: "You don't have any choices.", description: "Go create one with the button!"}]})
+      op["choices"].forEach((_, fofo) => {
         
-        if(optns[fofo] != null) su = su + 1;
-      })
+        if(op.choices[fofo] != null) su += 1;
+      });
+         
          let mn = new Discord.MessageSelectMenu().setMinValues(1).setMaxValues(su).setPlaceholder("Select choices!").setCustomId("choicechoosemenutodeletehtem")
          Object.values(op["choices"]).forEach(async cho => {
            mn.addOptions([{"label": `Choice - ${cho.name}`, "value": `${cho.name}`}]);
          });
+           //if(mn["options"].length < 2) mn.addOptions([{"label": "Placeholder option, needed so Discord doesn't bug out", value: ""}])
            await db.set(`currentEditingChoiceOption_${interaction.user.id}`, vuvuv)
-         await interaction.update({content: "Choose the choices to delete!", components: [new Discord.MessageActionRow().addComponents(mn)], ephemeral: true})
+         await interaction.update({embeds: [{color: colors.blue,title: "Choose the choices to delete!"}], components: [new Discord.MessageActionRow().addComponents(mn)], ephemeral: true})
          }
        }  
        }
@@ -524,7 +514,7 @@ if(interaction.customId == "guildidinput") {
          if(hujtkgfgimfg[dgunfduhnfdgujhn]["options"][lakakak]["name"] == `${v}`) {
            delete hujtkgfgimfg[dgunfduhnfdgujhn]["options"][lakakak];
           
-         await interaction.followUp({content: `Deleted ${v}!`, ephemeral: true});
+         await interaction.followUp({embeds: [{description: `Deleted ${v}!`}], ephemeral: true});
          }
          }
        }
@@ -536,10 +526,9 @@ if(interaction.customId == "guildidinput") {
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];
          
-        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
+        await interaction.followUp({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
      }, 2000);
    }
    if(interaction.customId == "modifySelection") {
@@ -552,20 +541,15 @@ if(interaction.customId == "guildidinput") {
       
       let optionss =emm[currentCOmmand]
       let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];
       //    if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true})
-        await interaction.editReply({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
+        await interaction.editReply({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
    }
    if(interaction.customId == "deleteSelection") {
-     await interaction.reply({content: "Trying to delete the commands! Be pacient ;)", ephemeral: true})
+     await interaction.reply({embeds: [{title: "Trying to delete the commands!", color: colors.blue}], ephemeral: true})
      let cm = await db.get(`commands_${interaction.user.id}`)
      interaction.values.forEach(async v => {
-       
-       
        if(cm[v]["made"] == true) {
-         let fetch = require("node-fetch");
-         
          let tofehf = cm[v]["guild"] == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands/${cm[v]["id"]}` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands/${cm[v]["id"]}`;
          
          await fetch(tofehf, {
@@ -576,7 +560,7 @@ if(interaction.customId == "guildidinput") {
            //let sususususususussu = await rp.json();
            //console.log(sususususususussu)
            if(rp.ok) {
-             interaction.followUp({content: `Successfully deleted ${v} command! (In the slash interface plus your commands inside this bot)`, ephemeral: true})
+             interaction.followUp({embeds: [{description: `Successfully deleted ${v} command! (In the slash interface plus your commands inside this bot)`, color: colors.blue}], ephemeral: true})
              delete cm[v];
              await db.set(`commands_${interaction.user.id}`, cm)
            } 
@@ -584,7 +568,7 @@ if(interaction.customId == "guildidinput") {
          
        } else {
          delete cm[v];
-         await interaction.followUp({content: `Successfully deleted ${v} command! (The command wasn't made yet so I only deleted it from your commands inside this bot)`, ephemeral: true})
+         await interaction.followUp({embeds: [{description: `Successfully deleted ${v} command! (The command wasn't made yet so I only deleted it from your commands inside this bot)`, color: colors.blue}], ephemeral: true})
        }
        
      });
@@ -622,11 +606,10 @@ await interaction.showModal(modal);
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
       
       let optionss =emm[currentCOmmand]
-      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`);
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];  
          
-        interaction.update({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
+        interaction.update({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
        }
        }
        
@@ -634,7 +617,7 @@ await interaction.showModal(modal);
     }
     if(interaction.customId == "modaloptioninput") {
       let name = interaction.fields.getTextInputValue("optionname").toLowerCase();
-      if(name.includes(" ")) return interaction.reply({content: "You've got spaces in your option name. That isn't good, so click the button again to fix it! :)", ephemeral: true});
+      if(name.includes(" ")) return interaction.reply({embeds: [{title: "You've got spaces in your option name.", description: "That isn't good, so click the button again to fix it! :)"}], ephemeral: true});
       let desc = interaction.fields.getTextInputValue("optiondescription")
       let optionObj = {"name": `${name}`, "description": `${desc}`}
       let rw = new Discord.MessageActionRow().addComponents(new Discord.MessageSelectMenu().setCustomId("optiontypeselect").setMinValues(1).setMaxValues(1).setOptions([{
@@ -643,7 +626,7 @@ await interaction.showModal(modal);
       let rw2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("SUCCESS").setLabel("Yes").setCustomId("optionRequiredTrue").setEmoji("✅"), new Discord.MessageButton().setCustomId("optionRequiredFalse").setLabel("No").setStyle("DANGER").setEmoji("❌"))
       
 
-        await interaction.update({content: "Should the option be required or no?", ephemeral: true, components: [rw2]})
+        await interaction.update({embeds: [{title: "Should the option be required or no?", color: colors.blue}], ephemeral: true, components: [rw2]})
      
         let eueueeueueueu = interaction.channel.createMessageComponentCollector({max: 1, componentType: "BUTTON"})
       eueueeueueueu.on("collect", async btni => {
@@ -659,12 +642,12 @@ await interaction.showModal(modal);
         e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options.push(optionObj)
         }
         
-        await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
+        await interaction.editReply({embeds: [{title: "Thanks!"}], ephemeral: true, components: []})
         //await interaction.deferUpdate({ephemeral: true});
-        await interaction.followUp({content: "Select the option type!", components: [rw], ephemeral: true})
+        await interaction.followUp({embeds: [{title: "Select the option type!"}], components: [rw], ephemeral: true})
       })
       
-   let superidolll   =interaction.channel.createMessageComponentCollector({max: 1, componentType: "SELECT_MENU"});
+   let superidolll = interaction.channel.createMessageComponentCollector({max: 1, componentType: "SELECT_MENU"});
       superidolll.on("collect", async clt => {
         optionObj["type"] = clt.values[0];
         let e = await db.get(`commands_${interaction.user.id}`)
@@ -674,43 +657,39 @@ await interaction.showModal(modal);
           if(!e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options || e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options == null) e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options = []
       e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options.push(optionObj)
       await db.set(`commands_${interaction.user.id}`, e)
-      let emm = await db.get(`commands_${interaction.user.id}`)
-      let db2 = require("quick.db")
+      let emm = await db.get(`commands_${interaction.user.id}`);
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
       
       let optionss =emm[currentCOmmand]
-      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`);
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];
       
     //   if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true});
-await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
-        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
+await clt.editReply({embeds: [{title: "Thanks!"}], ephemeral: true, components: []})
+        await interaction.followUp({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]})
       
       } else {
       for(let iu = 0;iu<optn.length;iu++) {
          
-        if(optn[iu] != null && optn[iu].name == name) return interaction.replied ? await interaction.editReply({content: "You've already got that option name on another existing option. Make sure to change it! ;)", ephemeral: true}) : await interaction.editReply({content: "You've already got that option name on another existing option. Make sure to change it! ;)", ephemeral: true})
+        if(optn[iu] != null && optn[iu].name == name) return interaction.replied ? await interaction.editReply({embeds: [{description: "You've already got that option name on another existing option. Make sure to change it! ;)", color: colors.red}], ephemeral: true}) : await interaction.editReply({embeds: [{color: colors.red, description: "You've already got that option name on another existing option. Make sure to change it! ;)"}], ephemeral: true})
       }
        // if(!interaction.deffered) {
           if(!e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options || e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options == null) e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options = []
       e[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`].options.push(optionObj)
       await db.set(`commands_${interaction.user.id}`, e)
-      let emm = await db.get(`commands_${interaction.user.id}`)
-      let db2 = require("quick.db")
+      let emm = await db.get(`commands_${interaction.user.id}`);
         //let mgu = interaction.channel.messages.fetch(db.get(`currentMng_${interaction.user.id}`))
       let sussus = emm[`${await db.get(`currentEditingCommand_${interaction.user.id}`)}`]
       let currentCOmmand = await db.get(`currentEditingCommand_${interaction.user.id}`)
       
       let optionss =emm[currentCOmmand]
-      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`)
-      let e69696969 = await db.get(`currentEditingCommand_${interaction.user.id}`)
-          let toedit = `**${naeem} command management**\n\nYour command has now got:\nName:${e69696969},\nDescription: ${sussus.description},\nOptions: ` + /*require("util").inspect(optionss.options)*/styleOptions(optionss.options)
+      let naeem = await db.get(`currentEditingCommand_${interaction.user.id}`);
+          let toedit = [{title: `**${naeem} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${naeem}`},{name: "Description", value: `${sussus.description}`}, {name: "Options", value:`${styleOptions(optionss.options)}`}], color: colors.blue}];
       //    if(!interaction.deferred || interaction.deferred == false) interaction.deferReply({ephemeral:true})
-await interaction.editReply({content: "Thanks!", ephemeral: true, components: []})
-        await interaction.followUp({content: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
+await interaction.editReply({embeds: [{description: "Thanks!"}], ephemeral: true, components: []})
+        await interaction.followUp({embeds: toedit, ephemeral: true, components: [new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)]});
           
       
       }
@@ -718,7 +697,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
     }
     if(interaction.customId == "infomodalguild") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
-      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({content: "You inputted the command with a character that's not allowed in it. Please remove it and do the command again :)", ephemeral: true});
+      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({embeds: [{title: "You inputted the command with a character that's not allowed in it. ", description: "Please remove it and do the command again :)", color: colors.red}], ephemeral: true});
       let e = await db.get(`commands_${interaction.user.id}`)
       
       if(e == null) e = {}
@@ -729,18 +708,16 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
+      let toedit = [{title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}`},{name: "Description", value: `${interaction.fields.getTextInputValue("description")}`}, {name: "Options", value:`${styleOptions(await db.get(`${`commands_${interaction.user.id}`}`).options)}`}], color: colors.blue}];
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
-      await interaction.reply({content: `**${interaction.fields.getTextInputValue("name")} command management**\n\nYour command has now got:\nName:${interaction.fields.getTextInputValue("name").toLowerCase()},\nDescription: ${interaction.fields.getTextInputValue("description")},\nOptions:${await db.get(`${`commands_${interaction.user.id}`}`).options}`, components: [roww], ephemeral:true})
-      interaction.fetchReply().then(async inte => {
-        
-        //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
-      })
+      await interaction.reply({embeds: toedit, components: [roww], ephemeral:true})
+      interaction.fetchReply();
     };
       //suske
     if(interaction.customId == "infomodalglobal") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
-      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({content: "You inputed the command with a character that's not allowed. Please remove it and do the command again :)", ephemeral: true})
+      if(!/^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/u.test(nm)) return interaction.reply({embeds: [{title: "You inputted the command with a character that's not allowed in it. ", description: "Please remove it and do the command again :)", color: colors.red}], ephemeral: true})
       let e = await db.get(`commands_${interaction.user.id}`)
       
       if(e == null) e = {}
@@ -752,23 +729,20 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       //hello there
       await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
-      await interaction.reply({content: `**${interaction.fields.getTextInputValue("name")} command management**\n\nYour command has now got:\nName:${interaction.fields.getTextInputValue("name").toLowerCase()},\nDescription: ${interaction.fields.getTextInputValue("description")},\nOptions:${await db.get(`${`commands_${interaction.user.id}`}`).options}`, components: [roww], ephemeral:true})
-      interaction.fetchReply().then(async inte => {
-        
-        //await db.set(`currentMng_${interaction.user.id}`, {interaction["id"], })
-      })
+      let toedit = [{title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`,fields: [{name:"Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}`},{name: "Description", value: `${interaction.fields.getTextInputValue("description")}`}, {name: "Options", value:`${styleOptions(await db.get(`${`commands_${interaction.user.id}`}`).options)}`}], color: colors.blue}];
+      await interaction.reply({embeds: toedit, components: [roww], ephemeral:true})
+      interaction.fetchReply();
     }
 //suske #
     if(interaction.customId == "modalclientidrealguild") {
       let clientid = interaction.fields.getTextInputValue("clientid")
-      let fetch = require("node-fetch");
       await fetch(`https://discord.com/api/v9/users/${clientid}`, {
         "method": "GET",
         "headers": {"authorization": `Bot ${process.env.token}`}
       }).then(async j => {
         let suske = await j.json()
         
-        if(suske.bot == false || j.status != 200) return interaction.reply({content: "You've inputted the wrong client ID. Double check! ;)",ephemeral: true})
+        if(suske.bot == false || j.status != 200) return interaction.reply({embeds: [{title: "You've inputted the wrong client ID.", description: "Double check! ;)"}],ephemeral: true})
         else {
           
       await db.set(`clientid_${interaction.user.id}`, clientid.toString())
@@ -776,7 +750,7 @@ await interaction.editReply({content: "Thanks!", ephemeral: true, components: []
       let btn = new Discord.MessageButton()
       .setLabel("Guild ID input")
 .setStyle("PRIMARY").setCustomId("guildidinput")
-      interaction.reply({content: "Ok I've got your client ID. What's your guild ID (in case you want to make guild commands)? If you're not planning on making guild commands, just type something random.", components: [new Discord.MessageActionRow(). addComponents (btn, source) ], ephemeral: true})
+      interaction.reply({embeds: [{title: "Okay, I've got your client ID. ",description:"What's your guild (server) ID (in case you want to make guild commands)? If you're not planning on making guild commands, just type something random.", color: colors.blue}], components: [new Discord.MessageActionRow(). addComponents (btn, source) ], ephemeral: true})
         }
       })
       
@@ -788,7 +762,7 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
   let btn = new Discord.MessageButton()
       .setLabel("Token input")
 .setStyle("PRIMARY").setCustomId("tokeninput")
-      interaction.reply({content: "Alright, I've got your guild ID. Now, lastly, input your bot token. Remember, the source button is always there to check ;)", components: [new Discord.MessageActionRow(). addComponents (btn, source) ], ephemeral: true})
+      interaction.reply({embeds: [{title: "Alright, I've got your guild ID.", description: "Now, lastly, input your bot token. We need that for registering the command on your bot. You can always check the source, up to you. (to get your token, run </slash info:985984380096901140> :wink:)", color: colors.blue}], components: [new Discord.MessageActionRow(). addComponents (btn, source) ], ephemeral: true})
 }
     
     if(interaction.customId == "modaltokeninpute") {
@@ -799,10 +773,10 @@ await db.set(`guildid_${interaction.user.id}`, guildid);
         "headers": {"Authorization": `Bot ${tkn}`}
       }).then(async suss => {
         
-        if(suss.status == 401) return interaction.reply({content: "You've inputted a wrong token! Double check ;)", ephemeral: true})
+        if(suss.status == 401) return interaction.reply({embeds: [{description: "You've inputted a wrong token! Double check ;)", color: colors.red}], ephemeral: true})
         else {
           await db.set(`botToken_${interaction.user.id}`, tkn)
-       interaction.reply({content: `Thanks! You've now got:\n\`${await db.get(`clientid_${interaction.user.id}`)}\` - client (bot) ID,\n\`${await db.get(`guildid_${interaction.user.id}`)}\` - guild ID and\n\`${await db.get(`botToken_${interaction.user.id}`)}\` as your bot token. You should be able to do \`/slash register\` now!`, ephemeral: true})
+       interaction.reply({embeds: [{title:"Thanks!", description: "You've now got:", fields: [{name: "client (bot) ID", value: `\`${await db.get(`clientid_${interaction.user.id}`)}\``}, {name: "guild ID", value: `\`${await db.get(`guildid_${interaction.user.id}`)}\``}, {name: "Bot token", value: `\`${await db.get(`botToken_${interaction.user.id}`)}\``}], footer: "You should be able to do /slash register now!"}], ephemeral: true})
           await db.set(`hasCompletedSetup_${interaction.user.id}`, true)
         }
       })
