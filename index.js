@@ -2,10 +2,10 @@ const express = require('express');
 const Discord = require("discord.js");
 const app = express();
 const fetch = require(`node-fetch`)
-process.on('unhandledRejection', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('unhandledRejection', async err => (await client.channels.fetch('1047257458835472536')).send(require("util").inspect(err)).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('uncaughtException', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 process.on('exit', async err => (await client.channels.fetch('1047257458835472536')).send(err).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
-process.on('multipleResolves', async err => (await client.channels.fetch('1047257458835472536')).send(err.stack).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
+process.on('multipleResolves', async err => (await client.channels.fetch('1047257458835472536')).send(require("util").inspect(err)).catch(async() => (await client.channels.fetch('1047257458835472536')).send(err)))
 app.get('/', (req, res) => {
   res.send('Hello Express app!')
 });
@@ -15,9 +15,7 @@ app.listen(3000, () => { //leave that if ya want
 let dtb = require("@replit/database");
 let colors = {
   red: 15548997,
-  blue: 3447003,
-  green: 5763719,
-  yellow: 16705372
+  blue: 3447003
 }
 let datab = new (require("@replit/database"))(atob(process.env.databaseKey));
 
@@ -393,19 +391,22 @@ if(interaction.customId == "guildidinput") {
         },
         "body": JSON.stringify(body)
       }).catch(console.error).then(async f => {
-      await db.set(`commands_${interaction.user.id}`, cmds)
+      
+        let zuzu = await f.json();
         if(f.status == 201 || f.status == 200) {
           
-          let zuzu = await f.json();
+          
         commandObj["id"] = `${zuzu.id}`;
         commandObj["made"] = true;
       cmds[`${current}`] = commandObj;
+          await db.set(`commands_${interaction.user.id}`, cmds)
           interaction.editReply({embeds: [{title: "It worked!",description: "Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)"}], ephemeral: true})
           await db.set("totalCommandsRegistered", (await db.get("totalCommandsRegistered")) + 1);
           (await client.channels.fetch("1047257458835472536")).send(`New command registered :D\nwe now have ${await db.get("totalCommandsRegistered")} commands`);
         } else {
           //let jso = await f.json();
          interaction.editReply({embeds: [{description: `It did not work ... go to our [support server](<https://discord.gg/YHJfQ4Enz9> "support server") and send this:\n\`${JSON.stringify(zuzu)}\``}], ephemeral: true}); 
+          (await client.channels.fetch("1047257458835472536")).send(`it didnt work :(\n${JSON.stringify(zuzu)}`)
         }
       })
     }//oj
