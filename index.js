@@ -195,7 +195,7 @@ let m = new Discord.MessageButton()
       if(interaction.options.getSubcommand() == "modify") {
         await interaction.deferReply({ephemeral: true});
         let cmds = await db.get(`commands_${interaction.user.id}`)
-        if(cmds == null || !cmds || cmds == {}) return interaction.reply({embeds: [{description: "You don't have any commands. Go create one with `/slash register`! ;)", color: colors.red}], ephemeral: true})
+        if(cmds == null || !cmds || cmds == {}) return interaction.editReply({embeds: [{description: "You don't have any commands. Go create one with `/slash register`! ;)", color: colors.red}], ephemeral: true})
         let brd = Object.keys(cmds).length;
         let m = new Discord.MessageSelectMenu().setPlaceholder("Select a command!").setMinValues(1).setMaxValues(1).setCustomId("modifySelection")
         Object.keys(cmds).forEach(c => {
