@@ -156,27 +156,28 @@ client.on("interactionCreate", async interaction => {
         let lakaka = Object.keys(sussuss).length;
         if (lakaka == 25) return interaction.editReply({ embeds: [new Discord.MessageEmbed().setDescription("You can only have 25 commands per account. We'll make an option to pay soon :) Thanks for supporting us!").setColor("RED")], ephemeral: true })
         let m = new Discord.MessageButton()
-          .setLabel("Guild commands")
+          .setLabel("Message commands")
           .setStyle("PRIMARY")
-          .setCustomId("guild")
+          .setCustomId("messagecomands")
         let e = new Discord.MessageButton()
-          .setLabel("Global commands")
+          .setLabel("User commands")
           .setStyle("PRIMARY")
-          .setCustomId("global")
+          .setCustomId("usercomands")
+        let b = new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomId("slashcomands")
         let clientid = await db.get(`clientid_${interaction.user.id}`)
         //interaction.deferReply(); 
-        if (clientid == null) return interaction.editReply({ embeds: [new Discord.MessageEmbed().setDescription("You haven't completed your setup yet. Run `/slash setup` to set up your preferences!").setColor("RED")], ephemeral: true })
-        let inte = await interaction.editReply({ embeds: [{ description: /*im lazy to use classes*/"Okay. What type of a slash command do you want?", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(m, e)], ephemeral: true, fetchReply: true })
-        let bread = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Guild commands").setLabel("Guild commands")
+        if (clientid == null) return interaction.editReply({ embeds: [new Discord.MessageEmbed().setDescription("You haven't completed your setup yet. Run `/slash setup` to set up your preferences!").setColor("RED")], ephemeral: true });
+        let inte = await interaction.editReply({ embeds: [{ description: /*im lazy to use classes*/"Okay. What type of a command do you want?", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(m, e, b)], ephemeral: true, fetchReply: true })
+        let bread = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Message commands")
           .setStyle("PRIMARY")
-          .setCustomId("guild").setDisabled(true), new Discord.MessageButton().setLabel("Global commands").setLabel("Global commands")
+          .setCustomId("messagecomands").setDisabled(true), new Discord.MessageButton().setLabel("User commands")
             .setStyle("PRIMARY")
-            .setCustomId("global").setDisabled(true));
+            .setCustomId("usercomands").setDisabled(true), new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomid("slashcomands"));
         let q = interaction.channel.createMessageComponentCollector({ componentType: "BUTTON", max: 1 })
         q.on("collect", () => {
           interaction.editReply({ embeds: [{ description: inte.embeds[0].description, color: colors.blue }], components: [bread], ephemeral: true })
           q.stop();
-        })
+        });
       }
       if (interaction.options.getSubcommand() == "delete") {
         await interaction.deferReply({ ephemeral: true });
@@ -216,6 +217,101 @@ client.on("interactionCreate", async interaction => {
       }D*/
   }
   if (interaction.isButton()) {
+    if(interaction.customId == "slashcomands") {
+      let m = new Discord.MessageButton()
+          .setLabel("Guild commands")
+          .setStyle("PRIMARY")
+          .setCustomId("guild")
+        let e = new Discord.MessageButton()
+          .setLabel("Global commands")
+          .setStyle("PRIMARY")
+          .setCustomId("global")
+        let inte = await interaction.editReply({ embeds: [{ description: /*im lazy to use classes*/"Okay. What type of a slash command do you want?", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(m, e)], ephemeral: true, fetchReply: true })
+        let bread = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Guild commands").setLabel("Guild commands")
+          .setStyle("PRIMARY")
+          .setCustomId("guild").setDisabled(true), new Discord.MessageButton().setLabel("Global commands").setLabel("Global commands")
+            .setStyle("PRIMARY")
+            .setCustomId("global").setDisabled(true));
+        let q = interaction.channel.createMessageComponentCollector({ componentType: "BUTTON", max: 1 })
+        q.on("collect", () => {
+          interaction.editReply({ embeds: [{ description: inte.embeds[0].description, color: colors.blue }], components: [bread], ephemeral: true })
+          q.stop();
+        })
+    }
+    if(interaction.customId == "usercomands") {
+      let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
+      if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
+      let m = new Discord.MessageButton()
+          .setLabel("Guild user commands")
+          .setStyle("PRIMARY")
+          .setCustomId("guilduser")
+        let e = new Discord.MessageButton()
+          .setLabel("Global user commands")
+          .setStyle("PRIMARY")
+          .setCustomId("globaluser")
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a user command. What type would they be?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m, e)], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(m.setDisabled(true), e.setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
+    if(interaction.customId == "messagecomands") {
+      let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
+      if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
+      let m = new Discord.MessageButton()
+          .setLabel("Guild user commands")
+          .setStyle("PRIMARY")
+          .setCustomId("guildmsg")
+        let e = new Discord.MessageButton()
+          .setLabel("Global user commands")
+          .setStyle("PRIMARY")
+          .setCustomId("globalmsg")
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a message command. What type would they be?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m, e)], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(m.setDisabled(true), e.setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
+    if(interaction.customId == "guilduser") {
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a guild user command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("usercommandinfo").setStyle("SUCCESS"))], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("usercommandinfo").setStyle("SUCCESS").setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
+    if(interaction.customId == "globaluser") {
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a global user command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("usercommandinfoglobal").setStyle("SUCCESS"))], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("usercommandinfoglobal").setStyle("SUCCESS").setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
+    if(interaction.customId == "guildmsg") {
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a guild message command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("msgcommandinfo").setStyle("SUCCESS"))], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("msgcommandinfo").setStyle("SUCCESS").setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
+    if(interaction.customId == "globalmsg") {
+      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a global message command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("msgcommandinfoglobal").setStyle("SUCCESS"))], fetchReply: true })
+      let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command name input").setCustomId("msgcommandinfoglobal").setStyle("SUCCESS").setDisabled(true));
+      let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
+      q.on("collect", () => {
+        interaction.editReply({ embeds: [eyourmom.embeds[0]], components: [r2] });
+        q.stop();
+      })
+    }
     if (interaction.customId == "yeschangetoken") {
       await db.delete(`botToken_${interaction.user.id}`)
       interaction.reply({ embeds: [{ description: "Token deleted!", color: colors.blue }], ephemeral: true })
@@ -313,7 +409,23 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId == "commandinfo") {
       let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT")), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setRequired(true))).setCustomId("infomodalguild").setTitle("Command info modal")
       await interaction.showModal(modal)
-    };
+    }
+    if (interaction.customId == "usercommandinfo") {
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodaluser").setTitle("Command name modal")
+      await interaction.showModal(modal)
+    }
+    if (interaction.customId == "usercommandinfoglobal") {
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodaluserglobal").setTitle("Command name modal")
+      await interaction.showModal(modal)
+    }
+    if (interaction.customId == "msgcommandinfo") {
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodalmsg").setTitle("Command name modal")
+      await interaction.showModal(modal)
+    }
+    if (interaction.customId == "msgcommandinfoglobal") {
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodalmsgglobal").setTitle("Command name modal")
+      await interaction.showModal(modal)
+    }
     //global
     if (interaction.customId == "commandinfoglobal") {
       let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT")), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setRequired(true))).setCustomId("infomodalglobal").setTitle("Command info modal")
@@ -390,9 +502,10 @@ client.on("interactionCreate", async interaction => {
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
       interaction.update({ embeds: [{ title: "Okay, registering the command." }], components: [] });
-      let body = { "name": `${current}`, "description": `${commandObj.description}` }
+      let body = { "name": `${current}`, "type": `${commandObj["type"]}`}
       if (commandObj.hasOwnProperty("options")) body["options"] = commandObj.options;
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
+      
       console.log(JSON.stringify(body))
       await fetch(dussyUrl, {
         "method": "POST",
@@ -714,7 +827,7 @@ client.on("interactionCreate", async interaction => {
 
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = { "description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false, "options": [] }
+      ebutdif[`${nm}`] = { "description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false, "options": [], "type": 1}
 
 
       await db.set(`commands_${interaction.user.id}`, ebutdif)
@@ -726,6 +839,66 @@ client.on("interactionCreate", async interaction => {
       await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
       interaction.fetchReply();
     };
+    if (interaction.customId == "infomodaluser") {
+      let nm = interaction.fields.getTextInputValue("name").toLowerCase()
+      let e = await db.get(`commands_${interaction.user.id}`);
+      if (e == null) e = {}
+      let ebutdif = e;
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 2};
+      await db.set(`commands_${interaction.user.id}`, ebutdif)
+
+      //hello there
+      let toedit = [{ title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`, fields: [{ name: "Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}` }, {name: "That's it", value: "You can't set any more properties to a user command. You can \"make\" it now!"}], color: colors.blue }];
+      await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
+      let roww = new Discord.MessageActionRow().addComponents(exitandmake)
+      await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
+      interaction.fetchReply();
+    }
+    if (interaction.customId == "infomodaluserglobal") {
+      let nm = interaction.fields.getTextInputValue("name").toLowerCase()
+      let e = await db.get(`commands_${interaction.user.id}`);
+      if (e == null) e = {}
+      let ebutdif = e;
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 2};
+      await db.set(`commands_${interaction.user.id}`, ebutdif)
+
+      //hello there
+      let toedit = [{ title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`, fields: [{ name: "Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}` }, {name: "That's it", value: "You can't set any more properties to a user command. You can \"make\" it now!"}], color: colors.blue }];
+      await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
+      let roww = new Discord.MessageActionRow().addComponents(exitandmake)
+      await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
+      interaction.fetchReply();
+    }
+    if (interaction.customId == "infomodalmsg") {
+      let nm = interaction.fields.getTextInputValue("name").toLowerCase()
+      let e = await db.get(`commands_${interaction.user.id}`);
+      if (e == null) e = {}
+      let ebutdif = e;
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 3};
+      await db.set(`commands_${interaction.user.id}`, ebutdif)
+
+      //hello there
+      let toedit = [{ title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`, fields: [{ name: "Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}` }, {name: "That's it", value: "You can't set any more properties to a message command. You can \"make\" it now!"}], color: colors.blue }];
+      await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
+      let roww = new Discord.MessageActionRow().addComponents(exitandmake)
+      await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
+      interaction.fetchReply();
+    }
+    if (interaction.customId == "infomodalmsgglobal") {
+      let nm = interaction.fields.getTextInputValue("name").toLowerCase()
+      let e = await db.get(`commands_${interaction.user.id}`);
+      if (e == null) e = {}
+      let ebutdif = e;
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 3};
+      await db.set(`commands_${interaction.user.id}`, ebutdif)
+
+      //hello there
+      let toedit = [{ title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`, fields: [{ name: "Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}` }, {name: "That's it", value: "You can't set any more properties to a message command. You can \"make\" it now!"}], color: colors.blue }];
+      await db.set(`currentEditingCommand_${interaction.user.id}`, `${interaction.fields.getTextInputValue("name").toLowerCase()}`)
+      let roww = new Discord.MessageActionRow().addComponents(exitandmake)
+      await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
+      interaction.fetchReply();
+    }
     //suske
     if (interaction.customId == "infomodalglobal") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
@@ -734,7 +907,7 @@ client.on("interactionCreate", async interaction => {
 
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = { "description": `${interaction.fields.getTextInputValue("description")}`, "guild": false, "made": false, "options": [] }
+      ebutdif[`${nm}`] = { "description": `${interaction.fields.getTextInputValue("description")}`, "guild": false, "made": false, "options": [], "type": 1}
 
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
