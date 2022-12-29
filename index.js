@@ -172,7 +172,7 @@ client.on("interactionCreate", async interaction => {
           .setStyle("PRIMARY")
           .setCustomId("messagecomands").setDisabled(true), new Discord.MessageButton().setLabel("User commands")
             .setStyle("PRIMARY")
-            .setCustomId("usercomands").setDisabled(true), new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomid("slashcomands"));
+            .setCustomId("usercomands").setDisabled(true), new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomId("slashcomands"));
         let q = interaction.channel.createMessageComponentCollector({ componentType: "BUTTON", max: 1 })
         q.on("collect", () => {
           interaction.editReply({ embeds: [{ description: inte.embeds[0].description, color: colors.blue }], components: [bread], ephemeral: true })
@@ -218,6 +218,7 @@ client.on("interactionCreate", async interaction => {
   }
   if (interaction.isButton()) {
     if(interaction.customId == "slashcomands") {
+      await interaction.deferReply({ephemeral:true})
       let m = new Discord.MessageButton()
           .setLabel("Guild commands")
           .setStyle("PRIMARY")
@@ -951,7 +952,7 @@ client.on("interactionCreate", async interaction => {
     }
 
     if (interaction.customId == "modaltokeninpute") {
-      let tkn = interaction.fields.getTextInputValue("token");
+      let tkn = interaction.fields.getTextInputValue("token").trim();
       let fetchus = require("node-fetch");
       await fetchus("https://discord.com/api/v9/users/@me", {
         "method": "GET",
