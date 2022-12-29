@@ -138,7 +138,7 @@ client.on("interactionCreate", async interaction => {
           embeds: [new Discord.MessageEmbed().setTitle("What do I do now?").setDescription(`Alright, so let's say you just registered your command. You want to use it, right? Well, Discord has a complicated API on that, but if I sum it up, you need the bot to either:\n- Be online and listening to the gateway events\n- Be configured on a webhook on your webapp.\nThese both seem complicated (the whole official documentation is [here](<https://discord.com/developers/docs> "click here for the docs")), but luckily, there's a lot of wrappers (most used ones being discord.js and discord.py) to help you code it. There's documentations on these as well ([discord.js](<https://discordjs.guide> "discord.js tutorial website"), [discord.py](<https://discordpy.readthedocs.io> "discord.py tutorial website")), so you can access them anytime. There's tutorials on how to use the slash commands there, or you can just google it. All you need is a compiler for node.js or python ;)\nIf you want an example, here's the discord.js one:\n\`\`\`js\nlet Discord = require("discord.js");\nlet client = new Discord.Client({intents: ["Guilds"]});\n\nclient.on("interactionCreate", async interaction => {
   if(interaction.commandName == "your command name here"){    
      await interaction.reply("Your reply content here")
-  };\n});\n\nclient.login("your bot's token here (use \`/slash info\` to get it, if you don't know how to)");\`\`\`\nHave fun!`).setColor("BLUE")
+  };\n});\n\nclient.login("your bot's token here (use \`/slash info\` to get it, if you don't know how to)");\`\`\`\nThis is just an example of a simple bot logging in and listening to the command interaction. If you've got any command handlers, the process is the same (the command name is the one you've registered, options and other things are accessed normally).\n\nHave fun!`).setColor("BLUE")
           ], ephemeral: true
         });
       };
@@ -221,10 +221,21 @@ client.on("interactionCreate", async interaction => {
       interaction.reply({ embeds: [{ description: "Token deleted!", color: colors.blue }], ephemeral: true })
       await db.set(`hasCompletedSetup_${interaction.user.id}`, false);
     }
-    if (interaction.customId == "notchangetoken") {
+    /*if (interaction.customId == "notchangetoken") {
       let row = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setStyle("PRIMARY").setCustomId("modalclientidguild").setLabel("Client ID input"), source)
       //amogus
       let intr = interaction.reply({ embeds: [{ description: "Welcome to the setup! Now, I'll leave a button labeled \"source\" on every one of these messages so you can always check the source code in case you don't trust the bot ;)\n\nSo, what's your client ID? (the bot's ID)", color: colors.blue }], components: [row], ephemeral: true })
+      await db.set(`currentInteraction_${interaction.user.id}`, intr);
+    }*/
+    if (interaction.customId == "notchangetoken") {
+      //amogus
+      
+          //await db.set(`clientid_${interaction.user.id}`, clientid.toString())
+          //let intr = await db.get(`currentInteraction_${interaction.user.id}`)
+          let btn = new Discord.MessageButton()
+            .setLabel("Guild ID input")
+            .setStyle("PRIMARY").setCustomId("guildidinput")
+          let intr = interaction.reply({ embeds: [{ title: "Welcome to the setup!", description: "First of all, what's your guild (server) ID (in case you want to make guild commands)?\nIf you're not planning on making guild commands, just type something random (but don't forget to change it later! :wink:)", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(btn, source)], ephemeral: true, fetchReply: true})
       await db.set(`currentInteraction_${interaction.user.id}`, intr);
     }
     if (interaction.customId == "deleteChoiceButton") {
@@ -309,7 +320,7 @@ client.on("interactionCreate", async interaction => {
       await interaction.showModal(modal)
     }
     //end 
-    if (interaction.customId == "modalclientidguild") {
+    /*if (interaction.customId == "modalclientidguild") {
       let clientid = new Discord.TextInputComponent()
         .setCustomId("clientid")
         .setLabel("Type in your client ID!")
@@ -320,7 +331,7 @@ client.on("interactionCreate", async interaction => {
       let clientidrow = new Discord.MessageActionRow().addComponents(clientid)
       let modal = new Discord.Modal().addComponents(clientidrow).setTitle("Client ID input :D").setCustomId("modalclientidrealguild")
       await interaction.showModal(modal)
-    }
+    }*/
     if (interaction.customId == "guildidinput") {
       let guildid = new Discord.TextInputComponent()
         .setCustomId("guildid")
@@ -472,7 +483,7 @@ client.on("interactionCreate", async interaction => {
 
       for (let op1 = 0; op1 < cm[cm2]["options"].length; op1++) {
         let op2 = cm[cm2]["options"][op1]
-        if (op2 == null) { }
+        if (op2 == null) {}
         else {
 
 
@@ -735,7 +746,7 @@ client.on("interactionCreate", async interaction => {
       interaction.fetchReply();
     }
     //suske #
-    if (interaction.customId == "modalclientidrealguild") {
+    /*if (interaction.customId == "modalclientidrealguild") {
       let clientid = interaction.fields.getTextInputValue("clientid")
       await fetch(`https://discord.com/api/v9/users/${clientid}`, {
         "method": "GET",
@@ -755,7 +766,7 @@ client.on("interactionCreate", async interaction => {
         }
       })
 
-    }
+    }*/
 
     if (interaction.customId == "modalguildidsus") {
       let guildid = interaction.fields.getTextInputValue("guildid");
@@ -773,10 +784,11 @@ client.on("interactionCreate", async interaction => {
         "method": "GET",
         "headers": { "Authorization": `Bot ${tkn}` }
       }).then(async suss => {
-
+        let jsonmus = await suss.json();
         if (suss.status == 401) return interaction.reply({ embeds: [{ description: "You've inputted a wrong token! Double check ;)", color: colors.red }], ephemeral: true })
         else {
           await db.set(`botToken_${interaction.user.id}`, tkn)
+          await db.set(`clientid_${interaction.user.id}`, jsonmus["id"])
           interaction.reply({ embeds: [{ title: "Thanks!", description: "You've now got:", fields: [{ name: "client (bot) ID", value: `\`${await db.get(`clientid_${interaction.user.id}`)}\`` }, { name: "guild ID", value: `\`${await db.get(`guildid_${interaction.user.id}`)}\`` }, { name: "Bot token", value: `\`${await db.get(`botToken_${interaction.user.id}`)}\`` }], footer: "You should be able to do /slash register now!" }], ephemeral: true })
           await db.set(`hasCompletedSetup_${interaction.user.id}`, true)
         }
