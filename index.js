@@ -110,10 +110,10 @@ client.on("interactionCreate", async interaction => {
         interaction.reply({ embeds: [errorEmb], ephemeral: true });
       }
     }
-    if (interaction.commandName == "slash") {// damn :pensive: whts wrong lolm I feel humiliated, jk jk jk im sorry lol youre doing a good job but it'd be weird if there would be random variables that aren't needed which arent in the rest of the code and theyd think that someone helped me (and i dont give credits to anyone else so that'd be weird :technodead:)
-      //i can credit you as well tho lol nah your good, also te ill just say you helped too and stuf
+    if (interaction.commandName == "slash") {
       if (interaction.options.getSubcommand() == "info") {
-        await interaction.deferReply({ ephemeral: true }); //shh, gotta follow the style of the code
+        await interaction.deferReply({ ephemeral: true }); 
+        
         await interaction.editReply({
           embeds: [new Discord.MessageEmbed().setTitle("Info about Slash Register").setDescription(`Hello! You seem to be wondering, what this bot is for, or what the whole Discord Bot things are. So, to start from the beggining: a Discord bot is an integration, which can log into the API like you and perform some actions.\nYour next question would probably be: "Well, how to make one?"\nDiscord has a website for creating these: <https://discord.com/developers>. You can create bots and some presence stuff there.\nTo start, click "New Application" and input your bot's name there. Then, go to the "bot" section, click "add bot", pick an avatar if you like and click "reset token" (and copy it afterwards).\nBy the way, anyone can access your bot if they have the token, so be careful.\nThen, go to the "Oauth2" section and click the subcategory "url generator". Then, select the "bot" scope, add the bot's permissions, copy the URL at the bottom and paste it into your browser. Then, invite the bot and boom! It's in the server. You can now register the bot's commands (</slash register:985984380096901140> :wink:) and proceed to </slash whatnow:985984380096901140>.\n\n**This bot** was created using the API as well, using the wrapper [discord.js](<https://discord.js.org> "djs docs").`)
             .addFields({
@@ -167,7 +167,7 @@ client.on("interactionCreate", async interaction => {
         let clientid = await db.get(`clientid_${interaction.user.id}`)
         //interaction.deferReply(); 
         if (clientid == null) return interaction.editReply({ embeds: [new Discord.MessageEmbed().setDescription("You haven't completed your setup yet. Run `/slash setup` to set up your preferences!").setColor("RED")], ephemeral: true });
-        let inte = await interaction.editReply({ embeds: [{ description: /*im lazy to use classes*/"Okay. What type of a command do you want?", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(m, e, b)], ephemeral: true, fetchReply: true })
+        let inte = await interaction.editReply({ embeds: [{ description:"Okay. What type of a command do you want?", color: colors.blue }], components: [new Discord.MessageActionRow().addComponents(m, e, b)], ephemeral: true, fetchReply: true })
         let bread = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Message commands")
           .setStyle("PRIMARY")
           .setCustomId("messagecomands").setDisabled(true), new Discord.MessageButton().setLabel("User commands")
@@ -412,19 +412,19 @@ client.on("interactionCreate", async interaction => {
       await interaction.showModal(modal)
     }
     if (interaction.customId == "usercommandinfo") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodaluser").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodaluser").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     if (interaction.customId == "usercommandinfoglobal") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodaluserglobal").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodaluserglobal").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     if (interaction.customId == "msgcommandinfo") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodalmsg").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodalmsg").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     if (interaction.customId == "msgcommandinfoglobal") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT"))).setCustomId("infomodalmsgglobal").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodalmsgglobal").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     //global
@@ -472,9 +472,9 @@ client.on("interactionCreate", async interaction => {
     }
     if (interaction.customId == "optionButton") {
       //uh
-      let guildid = new Discord.TextInputComponent().setCustomId("optionname").setLabel("Type in your option name").setMinLength(3).setMaxLength(10).setStyle("SHORT").setRequired(true)
+      let guildid = new Discord.TextInputComponent().setCustomId("optionname").setLabel("Type in your option name").setMinLength(3).setMaxLength(10).setStyle("SHORT").setRequired(true);
       let clientidrow = new Discord.MessageActionRow().addComponents(guildid)
-      let guildid2 = new Discord.TextInputComponent().setCustomId("optiondescription").setLabel("Type in your option description").setMinLength(5).setMaxLength(30).setStyle("SHORT");
+      let guildid2 = new Discord.TextInputComponent().setCustomId("optiondescription").setLabel("Type in your option description").setMinLength(5).setMaxLength(30).setStyle("SHORT").setRequired(true);
       let clientidrowee = new Discord.MessageActionRow().addComponents(guildid2)
       let modal = new Discord.Modal().addComponents(clientidrow, clientidrowee).setTitle("Option info input").setCustomId("modaloptioninput")
       await interaction.showModal(modal)
@@ -839,13 +839,13 @@ client.on("interactionCreate", async interaction => {
       let roww = new Discord.MessageActionRow().addComponents(optionMakeButton, choiceMakeButton, /*subcommandMakeButton, */exitandmake, deleteOption, deleteChoice)
       await interaction.reply({ embeds: toedit, components: [roww], ephemeral: true })
       interaction.fetchReply();
-    };
+    }
     if (interaction.customId == "infomodaluser") {
       let nm = interaction.fields.getTextInputValue("name").toLowerCase()
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 2};
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 2, "description": interaction.fields.getTextInputValue("description")};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
@@ -860,8 +860,8 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 2};
-      await db.set(`commands_${interaction.user.id}`, ebutdif)
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 2, "description": interaction.fields.getTextInputValue("description")};
+      await db.set(`commands_${interaction.user.id}`, ebutdif);
 
       //hello there
       let toedit = [{ title: `**${interaction.fields.getTextInputValue("name")} command management**`, description: `Your command has now got:`, fields: [{ name: "Name", value: `${interaction.fields.getTextInputValue("name").toLowerCase()}` }, {name: "That's it", value: "You can't set any more properties to a user command. You can \"make\" it now!"}], color: colors.blue }];
@@ -875,7 +875,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 3};
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 3,"description": interaction.fields.getTextInputValue("description")};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
@@ -890,7 +890,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 3};
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 3, "description": interaction.fields.getTextInputValue("description")};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
