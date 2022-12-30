@@ -372,15 +372,10 @@ client.on("interactionCreate", async interaction => {
       await interaction.update({ embeds: [{ description: "Select options to delete!", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m)] })
     }
     if (interaction.customId == "guild") {
+      await interaction.deferReply({ephemeral: true});
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
       if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
-
-      /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
-        realmtut.edit("hi")
-        console.log(mtut.components)
-        realmtut.edit({content: mtut.content, components: [realmtut.components[0]]})
-      })*/
-      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a guild command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name and description?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS"))], fetchReply: true })
+      let eyourmom = await interaction.editReply({ embeds: [{ title: "Alright, we're making a guild command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name and description?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS"))], fetchReply: true })
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
       q.on("collect", () => {
@@ -390,15 +385,10 @@ client.on("interactionCreate", async interaction => {
     }
     //e
     if (interaction.customId == "global") {
+      await interaction.deferReply({ephemeral:true});
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
       if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server.", color: colors.red }], ephemeral: true });
-
-      /*interaction.channel.messages.fetch(mtut.id).then(realmtut => {
-        realmtut.edit("hi")
-        console.log(mtut.components)
-        realmtut.edit({content: mtut.content, components: [realmtut.components[0]]})
-      })*/
-      let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a global command.", description: "I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?" }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS"))], fetchReply: true })
+      let eyourmom = await interaction.editReply({ embeds: [{ title: "Alright, we're making a global command.", description: "I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?" }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS"))], fetchReply: true })
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
       q.on("collect", () => {
