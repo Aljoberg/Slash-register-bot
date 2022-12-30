@@ -503,7 +503,7 @@ client.on("interactionCreate", async interaction => {
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
       interaction.update({ embeds: [{ title: "Okay, registering the command." }], components: [] });
-      let body = { "name": `${current}`, "type": `${commandObj["type"]}`}
+      let body = { "name": `${current}`, "type": `${commandObj["type"]}`, "description": `${commandObj["description"]}`}
       if (commandObj.hasOwnProperty("options")) body["options"] = commandObj.options;
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
       
@@ -829,7 +829,6 @@ client.on("interactionCreate", async interaction => {
       if (e == null) e = {}
       let ebutdif = e;
       ebutdif[`${nm}`] = { "description": `${interaction.fields.getTextInputValue("description")}`, "guild": true, "made": false, "options": [], "type": 1}
-
 
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
