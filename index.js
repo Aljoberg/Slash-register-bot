@@ -374,7 +374,7 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId == "guild") {
       await interaction.deferReply({ephemeral: true});
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
-      if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
+      if (ja == null || ja == false) return interaction.editReply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
       let eyourmom = await interaction.editReply({ embeds: [{ title: "Alright, we're making a guild command.", description: "I'll use your preferences, do </slash setup:985984380096901140> to overwrite them and manage them! So, what's your command name and description?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS"))], fetchReply: true })
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfo").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
@@ -387,7 +387,7 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId == "global") {
       await interaction.deferReply({ephemeral:true});
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
-      if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server.", color: colors.red }], ephemeral: true });
+      if (ja == null || ja == false) return interaction.editReply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server.", color: colors.red }], ephemeral: true });
       let eyourmom = await interaction.editReply({ embeds: [{ title: "Alright, we're making a global command.", description: "I'll use your preferences, do `/slash setup` to overwrite them and manage them! So, what's your command name and description?" }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS"))], fetchReply: true })
       let r2 = new Discord.MessageActionRow().addComponents(new Discord.MessageButton().setLabel("Command info input").setCustomId("commandinfoglobal").setStyle("SUCCESS").setDisabled(true));
       let q = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', max: 1 })
@@ -406,15 +406,15 @@ client.on("interactionCreate", async interaction => {
       await interaction.showModal(modal)
     }
     if (interaction.customId == "usercommandinfoglobal") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodaluserglobal").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true))/*, new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))*/).setCustomId("infomodaluserglobal").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     if (interaction.customId == "msgcommandinfo") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodalmsg").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true))/*, new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))*/).setCustomId("infomodalmsg").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     if (interaction.customId == "msgcommandinfoglobal") {
-      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true)), new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))).setCustomId("infomodalmsgglobal").setTitle("Command name modal")
+      let modal = new Discord.Modal().addComponents(new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("name").setLabel("What's the command name?").setMinLength(2).setMaxLength(15).setStyle("SHORT").setRequired(true))/*, new Discord.MessageActionRow().addComponents(new Discord.TextInputComponent().setCustomId("description").setLabel("What's the command description?").setMinLength(5).setMaxLength(30).setStyle("SHORT").setPlaceholder("This will only be seen under the \"integrations\" tab in server settings.").setRequired(true))*/).setCustomId("infomodalmsgglobal").setTitle("Command name modal")
       await interaction.showModal(modal)
     }
     //global
@@ -493,7 +493,8 @@ client.on("interactionCreate", async interaction => {
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
       interaction.update({ embeds: [{ title: "Okay, registering the command." }], components: [] });
-      let body = { "name": `${current}`, "type": `${commandObj["type"]}`, "description": `${commandObj["description"]}`}
+      let body = { "name": `${current}`, "type": `${commandObj["type"]}`};
+      if(commandObj.hasOwnProperty("description")) body["description"] = commandObj["description"];
       if (commandObj.hasOwnProperty("options")) body["options"] = commandObj.options;
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
       
@@ -834,7 +835,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 2, "description": interaction.fields.getTextInputValue("description")};
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 2};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
@@ -849,7 +850,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 2, "description": interaction.fields.getTextInputValue("description")};
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 2};
       await db.set(`commands_${interaction.user.id}`, ebutdif);
 
       //hello there
@@ -864,7 +865,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 3,"description": interaction.fields.getTextInputValue("description")};
+      ebutdif[`${nm}`] = {"guild": true, "made": false, "options": [], "type": 3};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
@@ -879,7 +880,7 @@ client.on("interactionCreate", async interaction => {
       let e = await db.get(`commands_${interaction.user.id}`);
       if (e == null) e = {}
       let ebutdif = e;
-      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 3, "description": interaction.fields.getTextInputValue("description")};
+      ebutdif[`${nm}`] = {"guild": false, "made": false, "options": [], "type": 3};
       await db.set(`commands_${interaction.user.id}`, ebutdif)
 
       //hello there
@@ -959,7 +960,7 @@ client.on("interactionCreate", async interaction => {
 
     }
   }
-})
+});
 client.on("guildCreate", async g => {
   (await client.channels.fetch("1047257458835472536")).send(`We got invited to ${g.name} with ${g.memberCount} members :D`)
 });
