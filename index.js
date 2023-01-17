@@ -489,13 +489,27 @@ client.on("interactionCreate", async interaction => {
       await interaction.update({ embeds: [{ title: "Okay, we're making a choice on an option.", description: "What option should the choice be on?", color: colors.blue }], components: [rowww], ephemeral: true })
     }
     if (interaction.customId == "exitAndMake") {
+      if(!interaction.deferred) interaction.deferReply({ephemeral:true});
       let cmds = await db.get(`commands_${interaction.user.id}`)
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
       interaction.update({ embeds: [{ title: "Okay, registering the command." }], components: [] });
       let body = { "name": `${current}`, "type": `${commandObj["type"]}`};
       if(commandObj.hasOwnProperty("description")) body["description"] = commandObj["description"];
-      if (commandObj.hasOwnProperty("options")) body["options"] = commandObj.options;
+      if (commandObj.hasOwnProperty("options")) {
+        let obtuns = [];
+        for(let i = 0;i<commandObj.options.length;i++) {
+          if(commandObj.options[i]) {
+            let chiucs = [];
+            commandObj.options[i].choices.forEach(choic => {
+              if(choic) chiucs.push(choic);
+            });
+            commandObj.options[i].choices = chiucs;
+            obtuns.push(commandObj.options[i]);
+          }
+        }
+        body["options"] = obtuns;
+      }
       let dussyUrl = commandObj.guild == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands`
       
       console.log(JSON.stringify(body))
@@ -607,8 +621,10 @@ client.on("interactionCreate", async interaction => {
 
               let mn = new Discord.MessageSelectMenu().setMinValues(1).setMaxValues(su).setPlaceholder("Select choices!").setCustomId("choicechoosemenutodeletehtem")
               Object.values(op["choices"]).forEach(async cho => {
-                mn.addOptions([{ "label": `Choice - ${cho.name}`, "value": `${cho.name}` }]);
+                if(!cho) {}
+                else mn.addOptions([{ "label": `Choice - ${cho.name}`, "value": `${cho.name}` }]);
               });
+              if(mn.options.length < 0) interaction.reply({embeds: [{title: "You don't have any options.", description: "Go create one with the button!", color: colors.red}], ephemeral: true});
               //if(mn["options"].length < 2) mn.addOptions([{"label": "Placeholder option, needed so Discord doesn't bug out", value: ""}])
               await db.set(`currentEditingChoiceOption_${interaction.user.id}`, vuvuv)
               await interaction.update({ embeds: [{ color: colors.blue, title: "Choose the choices to delete!" }], components: [new Discord.MessageActionRow().addComponents(mn)], ephemeral: true })
