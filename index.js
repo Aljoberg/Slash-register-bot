@@ -530,7 +530,7 @@ client.on("interactionCreate", async interaction => {
           commandObj["made"] = true;
           cmds[`${current}`] = commandObj;
           await db.set(`commands_${interaction.user.id}`, cmds)
-          interaction.editReply({ embeds: [{ title: "It worked!", description: "Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)" }], ephemeral: true })
+          interaction.editReply({ embeds: [{ title: "It worked!", description: "Try typing `/` in your server. If it doesn't appear, hit `Ctrl + R` to reload Discord and try again. If the issue still persists, come to our [support server](<https://discord.gg/YHJfQ4Enz9> \"support server\") and we'll help you there ;)\nWant to register another one? </slash register:985984380096901140> :)" }], ephemeral: true })
           await db.set("totalCommandsRegistered", (await db.get("totalCommandsRegistered")) + 1);
           (await client.channels.fetch("1047257458835472536")).send(`New command registered :D\nwe now have ${await db.get("totalCommandsRegistered")} commands`);
         } else {
