@@ -172,7 +172,7 @@ client.on("interactionCreate", async interaction => {
           .setStyle("PRIMARY")
           .setCustomId("messagecomands").setDisabled(true), new Discord.MessageButton().setLabel("User commands")
             .setStyle("PRIMARY")
-            .setCustomId("usercomands").setDisabled(true), new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomId("slashcomands"));
+            .setCustomId("usercomands").setDisabled(true), new Discord.MessageButton().setLabel("Slash commands").setStyle("PRIMARY").setCustomId("slashcomands").setDisabled(true));
         let q = interaction.channel.createMessageComponentCollector({ componentType: "BUTTON", max: 1 })
         q.on("collect", () => {
           interaction.editReply({ embeds: [{ description: inte.embeds[0].description, color: colors.blue }], components: [bread], ephemeral: true })
@@ -501,6 +501,7 @@ client.on("interactionCreate", async interaction => {
         for(let i = 0;i<commandObj.options.length;i++) {
           if(commandObj.options[i]) {
             let chiucs = [];
+            if(!commandObj.options[i].choices) commandObj.options[i].choices = [];
             commandObj.options[i].choices.forEach(choic => {
               if(choic) chiucs.push(choic);
             });
