@@ -489,7 +489,6 @@ client.on("interactionCreate", async interaction => {
       await interaction.update({ embeds: [{ title: "Okay, we're making a choice on an option.", description: "What option should the choice be on?", color: colors.blue }], components: [rowww], ephemeral: true })
     }
     if (interaction.customId == "exitAndMake") {
-      if(!interaction.deferred) interaction.deferReply({ephemeral:true});
       let cmds = await db.get(`commands_${interaction.user.id}`)
       let current = await db.get(`currentEditingCommand_${interaction.user.id}`)
       let commandObj = cmds[`${current}`]
@@ -983,6 +982,8 @@ client.on("guildCreate", async g => {
 });
 
 client.on("guildDelete", async g => {
+  if(!g.name) return;
+  console.log(g);
   (await client.channels.fetch("1047257458835472536")).send(`We got kicked from ${g.name} with ${g.memberCount} members :(`)
 })
 
