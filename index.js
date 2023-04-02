@@ -262,11 +262,11 @@ client.on("interactionCreate", async interaction => {
       let ja = await db.get(`hasCompletedSetup_${interaction.user.id}`)
       if (ja == null || ja == false) return interaction.reply({ embeds: [{ description: "You didn't set your preferences up yet! Do that by typing `/slash setup` in your server!", color: colors.red }], ephemeral: true });
       let m = new Discord.MessageButton()
-          .setLabel("Guild user commands")
+          .setLabel("Guild message commands")
           .setStyle("PRIMARY")
           .setCustomId("guildmsg")
         let e = new Discord.MessageButton()
-          .setLabel("Global user commands")
+          .setLabel("Global message commands")
           .setStyle("PRIMARY")
           .setCustomId("globalmsg")
       let eyourmom = await interaction.reply({ embeds: [{ title: "Alright, we're making a message command. What type would they be?", color: colors.blue }], ephemeral: true, components: [new Discord.MessageActionRow().addComponents(m, e)], fetchReply: true })
@@ -681,6 +681,7 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId == "deleteSelection") {
       await interaction.reply({ embeds: [{ title: "Trying to delete the commands!", color: colors.blue }], ephemeral: true })
       let cm = await db.get(`commands_${interaction.user.id}`)
+      console.log(interaction.values);
       interaction.values.forEach(async v => {
         if (cm[v]["made"] == true) {
           let tofehf = cm[v]["guild"] == true ? `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/guilds/${await db.get(`guildid_${interaction.user.id}`)}/commands/${cm[v]["id"]}` : `https://discord.com/api/v9/applications/${await db.get(`clientid_${interaction.user.id}`)}/commands/${cm[v]["id"]}`;
@@ -993,4 +994,4 @@ client.on("ready", async () => {
   client.user.setActivity("the newly created commands", { type: "WATCHING" });
 
 });
-//client.login(process.env.token)
+client.login(process.env.token)
